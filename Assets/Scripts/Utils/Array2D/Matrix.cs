@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Views;
 
 namespace Utils.Array2D
 {
@@ -37,5 +40,50 @@ namespace Utils.Array2D
                 }
             }
         }
+
+        private List<Cell> _matchesCells;
+        public List<Cell> GetMatches(Cell inCell)
+        {
+            if (_matchesCells == null) _matchesCells = new List<Cell>();
+            else this._matchesCells.Clear();
+            
+            ResetVisitedCells();
+
+            var initialResult = inCell.GetMatchesNeighbors(this);
+            _matchesCells.AddRange(initialResult);
+       
+            while (true) {
+                var allVisited = true;
+                for (var i = _matchesCells.Count - 1; i >= 0 ; i--) {
+                    var b = _matchesCells [i];
+                    if (!b.IsVisited)
+                    {
+                        AddMatches (b.GetMatchesNeighbors(this));
+                        allVisited = false;
+                    }
+                }
+                if (allVisited)  return _matchesCells;
+            }
+        }
+        
+        private void AddMatches (IEnumerable<Cell> matches) 
+        {
+            foreach (var cell in matches) 
+            {
+                if (!_matchesCells.Contains(cell))
+                    _matchesCells.Add(cell);
+            }
+            _matchesCells.Distinct();
+        }
+
+        private void ResetVisitedCells()
+        {
+            for (var y = 0; y < Dimension.y; y++)
+            {
+                for (var x = 0; x < Dimension.x; x++)
+                    _columns[y][x].IsVisited = false;
+            }
+        }
+
     }
 }

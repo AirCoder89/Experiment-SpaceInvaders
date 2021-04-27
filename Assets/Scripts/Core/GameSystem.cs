@@ -6,7 +6,7 @@
 
         protected GameSystem(SystemConfig inConfig = null)
         {
-            
+            IsRun = true;
         }
 
         public abstract void Start();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Interfaces;
+using UnityEngine;
 
 namespace Core
 {
@@ -33,6 +34,13 @@ namespace Core
             if(!_isRun) return;
             foreach (var system in _systems.Values)
                 if(system is ITick systemTick) systemTick?.Tick(inDeltaTime); 
+        }
+        
+        public void FixedTick(float inFixedDeltaTime)
+        {
+            if(!_isRun) return;
+            foreach (var system in _systems.Values)
+                if(system is IFixedTick systemFixedTick) systemFixedTick?.FixedTick(inFixedDeltaTime); 
         }
 
         public void Start()

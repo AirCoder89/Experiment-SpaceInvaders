@@ -8,6 +8,8 @@ namespace Core
 {
     public abstract class GameView
     {
+        public static event Action<Type, IComponent> OnAttachComponent;
+        public static event Action<Type, IComponent> OnDetachComponent;
         public Dictionary<Type, IComponent> Components{ get; private set; }
         private List<string> _attachedComponents;
         
@@ -37,10 +39,14 @@ namespace Core
         
         public virtual void Destroy()
         {
+            foreach (var component in Components)
+            {
+                Debug.Log($"remove Component {component.Key}");
+                component.Value.Destroy();
+            }
+            
             Object.Destroy(this.gameObject);
             gameObject = null;
-            foreach (var component in Components)
-                component.Value.Destroy();
         }
         
         public bool HasComponent<T>() where T : IComponent
@@ -48,9 +54,12 @@ namespace Core
         
         public T AddComponent<T>(T inComponent) where T : IComponent
         {
-            if (!HasComponent<T>()) return inComponent;
+            if (HasComponent<T>())  return inComponent; 
             _attachedComponents.Add(typeof(T).Name);
             Components.Add(typeof(T), inComponent);
+            inComponent.Attach(this);
+            Debug.Log($"AddComponent<T>");
+            OnAttachComponent?.Invoke(typeof(T), inComponent);
             return inComponent;
         }
 
@@ -65,6 +74,7 @@ namespace Core
         {
             if (!HasComponent<T>()) return false;
             var component = Components[typeof(T)];
+            OnDetachComponent?.Invoke(typeof(T), component);
             _attachedComponents.Remove(typeof(T).Name);
             var res =  Components.Remove(typeof(T));
             component.Destroy();

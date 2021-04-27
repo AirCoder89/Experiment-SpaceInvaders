@@ -15,7 +15,8 @@ namespace Utils.Array2D
                     cell.Visibility = _visibility;
             }
         }
-        
+
+
         public T this[int i]
         {
             get => _values[i];

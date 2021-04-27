@@ -1,4 +1,5 @@
 ﻿using Core;
+using Models;
 using Models.SystemConfigs;
 using UnityEngine;
 using Utils.Array2D;
@@ -33,12 +34,37 @@ namespace Systems
             {
                 for (var x = 0; x < _config.dimension.x; x++)
                 {
-                    _matrix[y, x] = new InvaderView($"Invader[{y},{x}]", new Vector2Int(y, x), _config.mesh, _config);
+                    var randomData = _config.invaders.GetRandom();
+                    randomData.position = new Vector2Int(y, x);
+                    
+                    _matrix[y, x] = new InvaderView($"Invader[{y},{x}]",randomData , _config);
                     _matrix[y, x].SetParent(_gridHolder);
                 }
             }
         }
 
-       
+        public void GetMatches(Vector2Int inLocation)
+        {
+            var matches = _matrix.GetMatches(_matrix[inLocation.y, inLocation.x]);
+            foreach (var c in matches)
+            {
+                var cell = c as InvaderView;
+                cell?.Select();
+            }
+        }
+
+        public void ResetAllCells()
+        {
+            for (var y = 0; y < _config.dimension.y; y++)
+            {
+                for (var x = 0; x < _config.dimension.x; x++)
+                {
+                    var cell = _matrix[y, x] as InvaderView;
+                    cell?.UnSelect();
+                }
+            }
+        }
+        
+
     }
 }
