@@ -4,8 +4,8 @@ namespace Utils.Array2D
     {
         Left,
         Right,
-        Top,
-        Bottom,
+        Up,
+        Down,
     }
     
 }

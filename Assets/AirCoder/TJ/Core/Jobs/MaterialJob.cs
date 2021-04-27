@@ -76,7 +76,7 @@ namespace AirCoder.TJ.Core.Jobs
             }
             private void SetupTweenOpacity(float opacityAmount)
             {
-                _startFloat = _material.GetColor(_propertyName).a;
+                _startFloat = _material.color.a;
                 _targetFloat = opacityAmount - _startFloat;
             }
     
@@ -109,9 +109,10 @@ namespace AirCoder.TJ.Core.Jobs
             private void InterpolateOpacity()
             {
                 var alpha = InterpolateFloat(_startFloat, _targetFloat, currentTime, duration);
-                var finalColor = _material.GetColor(_propertyName);
+                //var finalColor = _material.GetColor(_propertyName);
+                var finalColor = _material.color;
                 finalColor.a = alpha;
-                _material.SetColor(_propertyName, finalColor);
+                _material.color = finalColor;
             }
         #endregion
        

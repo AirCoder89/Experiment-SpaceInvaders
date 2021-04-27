@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d93524a4deb468098b596d101ba60b9, type: 3}
   m_Name: New Grid Config
   m_EditorClassIdentifier: 
+  tweenDirection: 1
+  tweenAxis: 1
+  tweenSpeed: 0.08
+  tweenEase: 38
+  invaderStep: 0.1
+  invaderStepDuration: 0.2
   dimension:
     x: 10
     y: 4
@@ -30,8 +36,7 @@ MonoBehaviour:
     - value: 10
       mesh: {fileID: -4664382578460312087, guid: e1d82ae1ca15b1e4ab6eb14a94497542, type: 3}
     colors:
-    - {r: 0.17986828, g: 0.8170864, b: 0.8867924, a: 1}
-    - {r: 1, g: 0.8000001, b: 0, a: 1}
+    - {r: 0.011764687, g: 0.89012116, b: 0.99215686, a: 1}
+    - {r: 1, g: 0.8000001, b: 0, a: 0}
     - {r: 1, g: 0.3066038, b: 0.3066038, a: 1}
     - {r: 0.15098791, g: 0.8207547, b: 0.33890745, a: 1}
-    materials: []

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using AirCoder.TJ.Core.Extensions;
+using AirCoder.TJ.Core.Jobs;
 using Core;
 using Models;
 using UnityEngine;
@@ -14,11 +16,13 @@ namespace Utils.Array2D
         public Vector2Int Location { get; private set; }
         public CellData Data { get; private set; }
         
+        public ITweenJob TweenJob { get; set; }
         public Cell(string inName, Vector2Int inPosition, CellData inData, Mesh inMesh, Material inMaterial = null) : base(inName, inMesh, inMaterial)
         {
             Data = inData;
             Location = inPosition;
         }
+
        
         public Cell GetNeighbor<T>(Direction inDirection, Matrix<T> inMatrix) where T : Cell
         {
@@ -26,8 +30,8 @@ namespace Utils.Array2D
             {
                 case Direction.Left when Location.x > 0 : return inMatrix[Location.x - 1, Location.y];
                 case Direction.Right when Location.x < inMatrix.Dimension.x-1 : return inMatrix[Location.x+1, Location.y];
-                case Direction.Top when Location.y > 0 : return inMatrix[Location.x, Location.y - 1];
-                case Direction.Bottom when Location.y < inMatrix.Dimension.y-1 : return inMatrix[Location.x, Location.y + 1];
+                case Direction.Up when Location.y > 0 : return inMatrix[Location.x, Location.y - 1];
+                case Direction.Down when Location.y < inMatrix.Dimension.y-1 : return inMatrix[Location.x, Location.y + 1];
                 default: return null;
             }
         }
@@ -35,8 +39,8 @@ namespace Utils.Array2D
         public List<Cell> GetAllNeighbors<T>(Matrix<T> inMatrix) where T : Cell
         {
             var result = new List<Cell>();
-            if(GetNeighbor(Direction.Top, inMatrix) != null) result.Add(GetNeighbor(Direction.Top, inMatrix));
-            if(GetNeighbor(Direction.Bottom, inMatrix) != null) result.Add(GetNeighbor(Direction.Bottom, inMatrix));
+            if(GetNeighbor(Direction.Up, inMatrix) != null) result.Add(GetNeighbor(Direction.Up, inMatrix));
+            if(GetNeighbor(Direction.Down, inMatrix) != null) result.Add(GetNeighbor(Direction.Down, inMatrix));
             if(GetNeighbor(Direction.Left, inMatrix) != null) result.Add(GetNeighbor(Direction.Left, inMatrix));
             if(GetNeighbor(Direction.Right, inMatrix) != null) result.Add(GetNeighbor(Direction.Right, inMatrix));
             return result;
@@ -54,6 +58,5 @@ namespace Utils.Array2D
             });
             return result;
         }
-
     }
 }

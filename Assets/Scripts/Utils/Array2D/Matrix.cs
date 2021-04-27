@@ -85,5 +85,67 @@ namespace Utils.Array2D
             }
         }
 
+        public void Tick(float inDeltaTime)
+        {
+            for (var y = 0; y < Dimension.y; y++)
+            {
+                for (var x = 0; x < Dimension.x; x++)
+                {
+                    _columns[y].Tick(inDeltaTime);
+                    _rows[x].Tick(inDeltaTime);
+                }
+            }
+        }
+
+        //-------- Animations Handlers
+        private MatrixLine _targetLine;
+        private Direction _direction;
+        private Action _moveCallback;
+        
+        public void MoveLineTo(MatrixLine inLine, Direction inDirection, float inStepLength, float inStepDuration, Action inCallback = null)
+        {
+            _targetLine = inLine;
+            _direction = inDirection;
+            _moveCallback = inCallback;
+            MoveTargetLines(GetStartIndex(), inStepLength, inStepDuration);
+        }
+
+        private Line2D<Cell>[] GetTargetLines()
+            => _targetLine == MatrixLine.Row ? this.Rows : this.Columns;
+        
+        private void MoveTargetLines(int index, float inStepLength, float inStepDuration)
+        {
+            if (IsLineCompleted(index))
+            {
+                //completed
+                _moveCallback?.Invoke();
+                return;
+            }
+            GetTargetLines()[index].MoveTo(_direction, inStepLength, inStepDuration, () =>
+            {
+                //next line
+                var next = NextLine(index);
+                MoveTargetLines(next, inStepLength, inStepDuration);
+            });
+        }
+
+        private int GetStartIndex()
+        {
+            if (_direction == Direction.Up) return 0;
+            return GetTargetLines().Length - 1;
+        }
+        
+        private int NextLine(int index)
+        {
+            if (_direction == Direction.Up) index++;
+            else index--;
+            return index;
+        }
+        
+        private bool IsLineCompleted(int index)
+        {
+            if (_direction == Direction.Up) return index >= GetTargetLines().Length;
+            else return index < 0;
+        }
     }
 }

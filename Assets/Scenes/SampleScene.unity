@@ -155,9 +155,8 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: f62eba01d29cd244cbdd3cf28b3f827a, type: 2}
   gridConfig: {fileID: 11400000, guid: 964623d6248d0c148bc2291ce2ea1f82, type: 2}
   shieldsConfig: {fileID: 11400000, guid: f0f4baf5e8c0fd64fafbf13a0e1a0c60, type: 2}
-  targetPos:
-    x: 0
-    y: 0
+  direction: 0
+  line: 1
 --- !u!4 &122629315
 Transform:
   m_ObjectHideFlags: 0
@@ -347,8 +346,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 2.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -404,13 +403,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.49504587, y: -0.1640374, z: 0.095778905, w: 0.8478489}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 60.56, y: -21.9, z: 0}
 --- !u!1 &945583444
 GameObject:
   m_ObjectHideFlags: 0

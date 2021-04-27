@@ -16,6 +16,7 @@ namespace Views
             _gridConfig = inConfig;
             UpdatePosition();
              Renderer.material.color = inData.color;
+             SetScale(Vector3.zero);
         }
        
         public void UpdatePosition()

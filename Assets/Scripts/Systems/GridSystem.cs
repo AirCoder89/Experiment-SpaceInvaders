@@ -1,17 +1,19 @@
 ﻿using Core;
+using Interfaces;
 using Models;
 using Models.SystemConfigs;
 using UnityEngine;
+using Utils;
 using Utils.Array2D;
 using Views;
 using Vector2Int = Utils.Array2D.Vector2Int;
 
 namespace Systems
 {
-    public class GridSystem : GameSystem
+    public class GridSystem : GameSystem, ITick
     {
-        private GridConfig _config;
-        private Transform _gridHolder;
+        private readonly GridConfig _config;
+        private readonly Transform _gridHolder;
         private Matrix<InvaderView> _matrix;
         
         public GridSystem(SystemConfig inConfig = null) : base(inConfig)
@@ -23,10 +25,12 @@ namespace Systems
 
         public override void Start()
         {
-            GenerateEmpty();
+            Generate();
+            if(_config.tweenAxis == TweenAxis.Vertical) OpeningAnimation(_matrix.Columns);
+            else if(_config.tweenAxis == TweenAxis.Horizontal) OpeningAnimation(_matrix.Rows);
         }
         
-        private void GenerateEmpty()
+        private void Generate()
         {
             _matrix = new Matrix<InvaderView>(_config.dimension.y, _config.dimension.x);
             
@@ -41,6 +45,29 @@ namespace Systems
                     _matrix[y, x].SetParent(_gridHolder);
                 }
             }
+        }
+
+        private void OpeningAnimation(Line2D<Cell>[] inLines)
+        {
+            /* in this approach I want to demonstrate sequence animations using callbacks.
+               It's may consume a little bit more than interpolate the scale them with Update.
+               We got benefits like flexibility to control the animation (LTR / RTL) or (Vertical/Horizontal) 
+               and by using tween library, we can animate using ease equations and that will smooth the animation.
+               also 
+            */
+            
+            //- end to start
+            for (var i = 0; i < inLines.Length; i++)
+            {
+                inLines[i].TweenCellsScale(_config.tweenDirection, _config.tweenSpeed, _config.tweenEase);
+                if (i == 0) inLines[i].TweenCallback = null;
+                else
+                {
+                    var index = i;
+                    inLines[i].TweenCallback = () => {inLines[index-1].PlayScaleTween(_config.tweenDirection); };
+                }
+            }
+            inLines[inLines.Length-1].PlayScaleTween(_config.tweenDirection); 
         }
 
         public void GetMatches(Vector2Int inLocation)
@@ -64,7 +91,17 @@ namespace Systems
                 }
             }
         }
-        
 
+        public void Tick(float inDeltaTime)
+        {
+            if(!IsRun) return;
+            _matrix.Tick(inDeltaTime);
+        }
+
+        public void MoveLine(Direction iNDirection, MatrixLine inLine)
+        {
+            _matrix.MoveLineTo(inLine, iNDirection, _config.invaderStep, _config.invaderStepDuration, () =>
+                Debug.Log($"Move Completed !!"));
+        }
     }
 }

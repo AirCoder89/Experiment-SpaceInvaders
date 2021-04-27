@@ -12,6 +12,8 @@ namespace Core
         public static event Action<Type, IComponent> OnDetachComponent;
         public Dictionary<Type, IComponent> Components{ get; private set; }
         private List<string> _attachedComponents;
+
+        public Vector3 Position => gameObject.transform.localPosition;
         
         private bool _visibility;
         public bool Visibility
@@ -36,6 +38,7 @@ namespace Core
         
         public void SetParent(Transform inParent) => gameObject.transform.parent = inParent;
         public void SetPosition(Vector3 inPosition) => gameObject.transform.localPosition = inPosition;
+        public void SetScale(Vector3 inScale) => gameObject.transform.localScale = inScale;
         
         public virtual void Destroy()
         {

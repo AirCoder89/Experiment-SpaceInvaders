@@ -1,11 +1,12 @@
-﻿using System;
+﻿
+using System;
 using Systems;
-using Systems.Physics_System;
 using AirCoder.NaughtyAttributes.Scripts.Core.DrawerAttributes;
 using AirCoder.NaughtyAttributes.Scripts.Core.DrawerAttributes_SpecialCase;
 using AirCoder.NaughtyAttributes.Scripts.Core.MetaAttributes;
 using AirCoder.NaughtyAttributes.Scripts.Core.ValidatorAttributes;
 using UnityEngine;
+using Utils.Array2D;
 using Vector2Int = Utils.Array2D.Vector2Int;
 
 namespace Core
@@ -18,24 +19,18 @@ namespace Core
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig gridConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig shieldsConfig;
 
-        public Vector2Int targetPos;
-        
+        public Direction direction;
+        public MatrixLine line;
         private GameController _controller;
         private static Main _instance;
 
         [Button]
-        private void GetMatches()
+        private void Move()
         {
             var grid = GetSystem<GridSystem>();
-            grid.GetMatches(targetPos);
+            grid.MoveLine(direction, line);
         }
 
-        [Button()]
-        private void ResetCells()
-        {
-            var grid = GetSystem<GridSystem>();
-            grid.ResetAllCells();
-        }
         
         private void Awake()
         {
@@ -70,7 +65,7 @@ namespace Core
             // Setup game settings
             // --------------------------------------------------------------------------------
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-            UnityEngine.Application.targetFrameRate = 60;
+            //UnityEngine.Application.targetFrameRate = 60;
             //Cursor.visible = false;
             
             if (Screen.currentResolution.refreshRate > 65) {
@@ -85,7 +80,6 @@ namespace Core
             // --------------------------------------------------------------------------------
             _controller = new GameController();
             _controller
-                .AddSystem(new PhysicsSystem())
                 .AddSystem(new GridSystem(gridConfig))
                 .AddSystem(new ShieldsSystem(shieldsConfig));
         }
