@@ -9,7 +9,8 @@ namespace Models.Invaders
     public struct InvaderCatalog
     {
         public List<InvaderDataSet> invaders;
-        public List<Color> colors;
+        public List<Color>          colors;
+        
         public CellData GetRandom()
         {
             var data = invaders[Random.Range(0, invaders.Count)];

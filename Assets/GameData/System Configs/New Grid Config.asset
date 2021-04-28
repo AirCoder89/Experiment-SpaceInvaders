@@ -17,7 +17,7 @@ MonoBehaviour:
   tweenSpeed: 0.08
   tweenEase: 38
   invaderStep: 0.1
-  invaderStepDuration: 0.2
+  invaderStepDuration: 0.25
   dimension:
     x: 10
     y: 4

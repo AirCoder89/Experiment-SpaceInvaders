@@ -8,16 +8,14 @@ namespace Models.SystemConfigs
     [CreateAssetMenu(menuName = "Game/System Config/Shields System Config")]
     public class ShieldConfig : SystemConfig
     {
-        public LayerMask targetLayer;
-        
-        [BoxGroup("Pieces")] public Mesh meshPiece;
-        [BoxGroup("Pieces")] public Vector3 pieceScale;
-        [BoxGroup("Pieces")] public float spacing;
-        [BoxGroup("Pieces")] public LayerMask layerMask;
+        [BoxGroup("Pieces")] public Mesh       meshPiece;
+        [BoxGroup("Pieces")] public Vector3    pieceScale;
+        [BoxGroup("Pieces")] public float      spacing;
+        [BoxGroup("Pieces")] public LayerMask  layerMask;
 
-        [BoxGroup("Shield")] public int shieldAmount = 3;
+        [BoxGroup("Shield")] public int        shieldAmount = 3;
         [BoxGroup("Pieces")] public Vector2Int shieldDimension;
-        [BoxGroup("Shield")] public Vector2 startAnchor;
-        [BoxGroup("Shield")] public float shieldSpacing;
+        [BoxGroup("Shield")] public Vector2    startAnchor;
+        [BoxGroup("Shield")] public float      shieldSpacing;
     }
 }

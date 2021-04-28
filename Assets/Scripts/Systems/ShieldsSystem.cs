@@ -7,9 +7,9 @@ namespace Systems
 {
     public class ShieldsSystem : GameSystem
     {
-        private Transform _holder;
-        private ShieldConfig _config;
-        private ShieldView[] _shields;
+        private readonly Transform     _holder;
+        private readonly ShieldConfig  _config;
+        private ShieldView[]           _shields;
         
         public ShieldsSystem(SystemConfig inConfig = null) : base(inConfig)
         {

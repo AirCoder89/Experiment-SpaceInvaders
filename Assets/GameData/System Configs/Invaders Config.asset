@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f9878408fb4975b397a006519e3ca9, type: 3}
+  m_Name: Invaders Config
+  m_EditorClassIdentifier: 
+  stepDelay: 0.05
+  stepLength: 0.15
+  stepDuration: 0.05
+  moveDownPacing: 0.3
+  edgesSize: {x: 0.5, y: 12, z: 1}
+  leftEdgePos: {x: 10.5, y: 1, z: 0}
+  rightEdgePos: {x: -10.5, y: 1, z: 0}
+  specialShipMesh: {fileID: -4664382578460312087, guid: d43291af8d7bb994db556c48faae9f8d, type: 3}
+  specialShipStartPos: {x: -11, y: 6, z: 0}
+  specialShipTargetPos: {x: 11, y: 6, z: 0}
+  specialShipSpeed: 0.3
+  specialShipAppearanceRate: 1

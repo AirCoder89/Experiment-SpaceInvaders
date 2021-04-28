@@ -6,7 +6,7 @@ namespace Models.Invaders
     [Serializable]
     public struct InvaderDataSet
     {
-        public int value;
-        public Mesh mesh;
+        public int   value;
+        public Mesh  mesh;
     }
 }

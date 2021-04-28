@@ -8,7 +8,6 @@ namespace Core
     public class GameController
     {
         private readonly Dictionary<Type, GameSystem> _systems;
-
         private bool _isRun;
         
         public GameController()

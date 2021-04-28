@@ -20,13 +20,22 @@ namespace Utils.Array2D
         }
         
         private readonly T[] _values;
-        private bool _visibility;
+        private bool         _visibility;
+        private int          _index;
+        private float        _counter;
+        private float        _stepLength;
+        private float        _stepDuration;
+        private bool         _canMove;
+        private Vector3      _targetPos;
+        private Direction    _direction;
+        private Action       _moveCallback;
         
         public T this[int i]
         {
             get => _values[i];
             set => _values[i] = value;
         }
+        
 
         public Line2D(int inSize)
         {
@@ -34,15 +43,6 @@ namespace Utils.Array2D
         }
         
         #region Sequence Animation Using Tick (Update)
-        
-        private int _index;
-        private float _counter;
-        private float _stepLength;
-        private float _stepDuration;
-        private bool _canMove;
-        private Vector3 _targetPos;
-        private Direction _direction;
-        private Action _moveCallback;
         public void MoveTo(Direction inDirection, float inStepLength, float inStepDuration, Action inCallback = null)
         {
             if (_values == null || _values.Length == 0) return;
@@ -106,17 +106,16 @@ namespace Utils.Array2D
         
         private void NextCell()
         {
+            _counter = 0f;
             if (_direction == Direction.Right)
             {
                 _index--;
-                _counter = 0f;
                 if (_index >= 0) 
                     AssignTargetPosition(_values[_index]);
             }
             else 
             {
                 _index++;
-                _counter = 0f;
                 if (_index < _values.Length) 
                     AssignTargetPosition(_values[_index]);
             }

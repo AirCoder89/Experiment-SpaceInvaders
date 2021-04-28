@@ -22,9 +22,10 @@ namespace Utils.Array2D
             }
         }
 
-        private Line2D<Cell>[] _columns;
-        private Line2D<Cell>[] _rows;
-
+        private Line2D<Cell>[]  _columns;
+        private Line2D<Cell>[]  _rows;
+        private List<Cell>      _matchesCells;
+        
         public Matrix(int width, int height)
         {
             _columns = new Line2D<Cell>[height];
@@ -41,7 +42,6 @@ namespace Utils.Array2D
             }
         }
 
-        private List<Cell> _matchesCells;
         public List<Cell> GetMatches(Cell inCell)
         {
             if (_matchesCells == null) _matchesCells = new List<Cell>();

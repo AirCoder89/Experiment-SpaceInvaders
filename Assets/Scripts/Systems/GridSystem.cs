@@ -1,6 +1,6 @@
-﻿using Core;
+﻿using System;
+using Core;
 using Interfaces;
-using Models;
 using Models.SystemConfigs;
 using UnityEngine;
 using Utils;
@@ -12,8 +12,10 @@ namespace Systems
 {
     public class GridSystem : GameSystem, ITick
     {
+        public bool IsReady { get; private set; }
+        
         private readonly GridConfig _config;
-        private readonly Transform _gridHolder;
+        private readonly Transform  _gridHolder;
         private Matrix<InvaderView> _matrix;
         
         public GridSystem(SystemConfig inConfig = null) : base(inConfig)
@@ -26,6 +28,7 @@ namespace Systems
         public override void Start()
         {
             Generate();
+            IsReady = false;
             if(_config.tweenAxis == TweenAxis.Vertical) OpeningAnimation(_matrix.Columns);
             else if(_config.tweenAxis == TweenAxis.Horizontal) OpeningAnimation(_matrix.Rows);
         }
@@ -60,7 +63,7 @@ namespace Systems
             for (var i = 0; i < inLines.Length; i++)
             {
                 inLines[i].TweenCellsScale(_config.tweenDirection, _config.tweenSpeed, _config.tweenEase);
-                if (i == 0) inLines[i].TweenCallback = null;
+                if (i == 0) inLines[i].TweenCallback = () => { IsReady = true;};
                 else
                 {
                     var index = i;
@@ -98,10 +101,9 @@ namespace Systems
             _matrix.Tick(inDeltaTime);
         }
 
-        public void MoveLine(Direction iNDirection, MatrixLine inLine)
+        public void MoveLine(Direction inDirection, float inStepLength, float inStepDuration, Action onComplete)
         {
-            _matrix.MoveLineTo(inLine, iNDirection, _config.invaderStep, _config.invaderStepDuration, () =>
-                Debug.Log($"Move Completed !!"));
+            _matrix.MoveLineTo(MatrixLine.Row, inDirection, inStepLength, inStepDuration, onComplete);
         }
     }
 }

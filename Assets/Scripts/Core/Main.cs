@@ -14,24 +14,17 @@ namespace Core
     public class Main : MonoBehaviour
     {
         public static GameSettings Settings => _instance.settings;
+        [BoxGroup("Settings")][Required][SerializeField][Expandable] private GameSettings settings;
         
-        [BoxGroup("Settings")][Required][SerializeField] [Expandable] private GameSettings settings;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig gridConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig shieldsConfig;
+        [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig invadersConfig;
 
-        public Direction direction;
-        public MatrixLine line;
         private GameController _controller;
-        private static Main _instance;
+        private static Main    _instance;
+        private GameStates     _currentState;
 
-        [Button]
-        private void Move()
-        {
-            var grid = GetSystem<GridSystem>();
-            grid.MoveLine(direction, line);
-        }
 
-        
         private void Awake()
         {
             if (_instance != null)  return;
@@ -80,8 +73,10 @@ namespace Core
             // --------------------------------------------------------------------------------
             _controller = new GameController();
             _controller
+                .AddSystem(new TimingSystem())
                 .AddSystem(new GridSystem(gridConfig))
-                .AddSystem(new ShieldsSystem(shieldsConfig));
+                .AddSystem(new ShieldsSystem(shieldsConfig))
+                .AddSystem(new InvadersSystem(invadersConfig));
         }
         
         public static T GetSystem<T>() where T : GameSystem

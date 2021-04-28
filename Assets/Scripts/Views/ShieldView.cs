@@ -8,7 +8,7 @@ namespace Views
     public class ShieldView : GameView
     {
         private Dictionary<string, ShieldPiece> _pieces;
-        private ShieldConfig _config;
+        private ShieldConfig                    _config;
         
         public ShieldView(string inName, ShieldConfig inConfig) : base(inName)
         {

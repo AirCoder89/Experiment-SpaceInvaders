@@ -15,8 +15,8 @@ namespace Utils.Array2D
         public bool IsVisited { get; set; }
         public Vector2Int Location { get; private set; }
         public CellData Data { get; private set; }
-        
         public ITweenJob TweenJob { get; set; }
+        
         public Cell(string inName, Vector2Int inPosition, CellData inData, Mesh inMesh, Material inMaterial = null) : base(inName, inMesh, inMaterial)
         {
             Data = inData;

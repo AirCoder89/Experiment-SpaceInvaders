@@ -10,7 +10,6 @@ namespace Views
     {
         private GridConfig _gridConfig;
        
-
         public InvaderView(string inName, CellData inData, GridConfig inConfig)  : base(inName, inData.position, inData, inData.mesh, inConfig.material)
         {
             _gridConfig = inConfig;
