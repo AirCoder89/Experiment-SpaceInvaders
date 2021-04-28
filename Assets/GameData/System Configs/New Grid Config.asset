@@ -16,25 +16,25 @@ MonoBehaviour:
   tweenAxis: 1
   tweenSpeed: 0.08
   tweenEase: 38
-  invaderStep: 0.1
-  invaderStepDuration: 0.25
   dimension:
     x: 10
-    y: 4
+    y: 5
   spacing: {x: 0.2, y: -0.1}
   padding: {x: -5.5, y: 5}
   cellSize: {x: 1.2, y: 1}
   material: {fileID: 2100000, guid: c682f4dcc90b8c941a010deec2f2d7aa, type: 2}
   invaders:
+    indexer: 0200000001000000010000000000000000000000
     invaders:
-    - value: 10
-      mesh: {fileID: -4664382578460312087, guid: 752b240064f120942b9ebe8fc9f7f5e6, type: 3}
-    - value: 10
-      mesh: {fileID: -4664382578460312087, guid: be016d7846a6a1c419c4870568eaab61, type: 3}
-    - value: 10
-      mesh: {fileID: -4664382578460312087, guid: 25df448944895d44fbcc812ee488c3ae, type: 3}
-    - value: 10
-      mesh: {fileID: -4664382578460312087, guid: e1d82ae1ca15b1e4ab6eb14a94497542, type: 3}
+    - label: 0
+      value: 10
+      mesh: {fileID: -4664382578460312087, guid: a05aca68d768c924c955e75128fb6ec3, type: 3}
+    - label: 1
+      value: 20
+      mesh: {fileID: -4664382578460312087, guid: 4ce1456df5a897b4d98788741fb23872, type: 3}
+    - label: 2
+      value: 30
+      mesh: {fileID: -4664382578460312087, guid: cd7e2ec4eceee0f438c6f47352c5ad9b, type: 3}
     colors:
     - {r: 0.011764687, g: 0.89012116, b: 0.99215686, a: 1}
     - {r: 1, g: 0.8000001, b: 0, a: 0}

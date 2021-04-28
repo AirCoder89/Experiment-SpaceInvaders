@@ -39,12 +39,13 @@ namespace Systems
             
             for (var y = 0; y < _config.dimension.y; y++)
             {
+                var invadersData = _config.invaders.GetDataByInvaderIndex(y);
                 for (var x = 0; x < _config.dimension.x; x++)
                 {
-                    var randomData = _config.invaders.GetRandom();
-                    randomData.position = new Vector2Int(y, x);
+                    invadersData.color = _config.invaders.GetRandomColor();
+                    invadersData.position = new Vector2Int(y, x);
                     
-                    _matrix[y, x] = new InvaderView($"Invader[{y},{x}]",randomData , _config);
+                    _matrix[y, x] = new InvaderView($"Invader[{y},{x}]", invadersData , _config);
                     _matrix[y, x].SetParent(_gridHolder);
                 }
             }
@@ -73,6 +74,32 @@ namespace Systems
             inLines[inLines.Length-1].PlayScaleTween(_config.tweenDirection); 
         }
 
+        public void SelectLast(int inColumn)
+        {
+            var column = _matrix.Columns[inColumn];
+            if(!(column.GetLastAlive() is InvaderView lastAlive)) return;
+            lastAlive.Select();
+        }
+        public void UnselectLast(int inColumn)
+        {
+            var column = _matrix.Columns[inColumn];
+            if(!(column.GetLastAlive() is InvaderView lastAlive)) return;
+            lastAlive.UnSelect();
+        }
+        
+        public void TakeDamage(Vector2Int inLocation)
+        {
+            var invader = _matrix[inLocation.y, inLocation.x];
+            if(invader is IDestructible destructible) 
+                destructible.TakeDamage();
+        }
+        public void Revive(Vector2Int inLocation)
+        {
+            var invader = _matrix[inLocation.y, inLocation.x];
+            if(invader is IDestructible destructible) 
+                destructible.Revive();
+        }
+        
         public void GetMatches(Vector2Int inLocation)
         {
             var matches = _matrix.GetMatches(_matrix[inLocation.y, inLocation.x]);

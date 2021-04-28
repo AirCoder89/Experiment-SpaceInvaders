@@ -20,14 +20,14 @@ namespace Systems
         
         public override void Start()
         {
-            Vector3 pos = _config.startAnchor;
-            _shields = new ShieldView[_config.shieldAmount];
-            for (var i = 0; i < _config.shieldAmount; i++)
+            Vector3 pos = _config.shieldData.startAnchor;
+            _shields = new ShieldView[_config.shieldData.shieldCount];
+            for (var i = 0; i < _config.shieldData.shieldCount; i++)
             {
                 _shields[i] = new ShieldView($"Shield_{i}", _config);
                 _shields[i].SetParent(_holder);
                 _shields[i].SetPosition(pos);
-                pos = new Vector3(pos.x + _shields[i].GetWidth() + _config.shieldSpacing, pos.y, 0f);
+                pos = new Vector3(pos.x + _shields[i].GetWidth() + _config.shieldData.shieldSpacing, pos.y, 0f);
             }
         }
     }

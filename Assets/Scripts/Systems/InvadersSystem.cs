@@ -33,10 +33,10 @@ namespace Systems
             CreateEdges();
             
             //- Special Ship
-            _showSpecialShip = false;
+            /*_showSpecialShip = false;
             _specialShip = new GameView3D("SpecialShip", _config.specialShipMesh);
             _specialShip.SetPosition(_config.specialShipStartPos);
-            _specialShipTimer = new Timer(_config.specialShipAppearanceRate, ShowSpecialShip);
+            _specialShipTimer = new Timer(_config.specialShipAppearanceRate, ShowSpecialShip);*/
         }
 
         private void ShowSpecialShip()
@@ -55,7 +55,7 @@ namespace Systems
             _currentDirection = Direction.Right;
             _timeCounter = 0f;
             _canMove = true;
-            _specialShipTimer.Start();
+            //_specialShipTimer.Start();
         }
 
         public void Tick(float inDeltaTime)
@@ -71,7 +71,7 @@ namespace Systems
 
         private void MoveInvadersLeftAndRight()
         {
-            var step = _timeCounter / _config.stepDelay;
+            var step = _timeCounter / _config.movement.stepDelay;
             if (!(step >= 1f)) return;
                 //move
                 _canMove = false;
@@ -81,7 +81,7 @@ namespace Systems
 
         private void MoveToDirection()
         {
-            _gridSystem.MoveLine(_currentDirection, _config.stepLength, _config.stepDuration, () =>
+            _gridSystem.MoveLine(_currentDirection, _config.movement.stepLength, _config.movement.stepDuration, () =>
             {
                 if (_hasToReverse)
                 {
@@ -91,7 +91,7 @@ namespace Systems
                     _currentDirection = _currentDirection == Direction.Right 
                         ? Direction.Left 
                         : Direction.Right;
-                    _gridSystem.MoveLine(Direction.Down, _config.stepLength, _config.moveDownPacing, () =>
+                    _gridSystem.MoveLine(Direction.Down, _config.movement.stepLength, _config.movement.moveDownPacing, () =>
                     {
                         //2- Continue moving Left/Right
                         _timeCounter = 0f;
@@ -110,16 +110,16 @@ namespace Systems
         {
             //- Left Edge
             var leftEdge = new GameObject("LeftEdge");
-            leftEdge.transform.position = _config.leftEdgePos;
+            leftEdge.transform.position = _config.edges.leftPos;
             var leftHitEdge = leftEdge.AddComponent<HitDetector>();
-            leftHitEdge.Initialize(_config.edgesSize, false);
+            leftHitEdge.Initialize(_config.edges.size, false);
             leftHitEdge.onHitEnter += o => _hasToReverse = true;
             
             //- Right Edge
             var rightEdge = new GameObject("RightEdge");
-            rightEdge.transform.position = _config.rightEdgePos;
+            rightEdge.transform.position = _config.edges.rightPos;
             var rightHitEdge = rightEdge.AddComponent<HitDetector>();
-            rightHitEdge.Initialize(_config.edgesSize, false);
+            rightHitEdge.Initialize(_config.edges.size, false);
             rightHitEdge.onHitEnter += o => _hasToReverse = true;
         }
 

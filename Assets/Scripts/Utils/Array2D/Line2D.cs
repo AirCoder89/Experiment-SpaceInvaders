@@ -1,6 +1,7 @@
 using System;
 using AirCoder.TJ.Core;
 using AirCoder.TJ.Core.Extensions;
+using Interfaces;
 using UnityEngine;
 
 namespace Utils.Array2D
@@ -36,10 +37,19 @@ namespace Utils.Array2D
             set => _values[i] = value;
         }
         
-
         public Line2D(int inSize)
         {
             _values = new T[inSize];
+        }
+
+        public T GetLastAlive()
+        {
+            for (var i = _values.Length -1; i >= 0 ; i--)
+            {
+                if (_values[i] is IDestructible destructible && destructible.IsAlive)
+                    return _values[i];
+            }
+            return null;
         }
         
         #region Sequence Animation Using Tick (Update)

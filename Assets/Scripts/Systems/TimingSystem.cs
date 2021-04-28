@@ -21,7 +21,7 @@ namespace Systems
 
         public void Tick(float inDeltaTime)
         {
-            if(!IsRun) return;
+            if(!IsRun || _timers == null) return;
             foreach (var timer in _timers.ToList())
                 timer.Tick(inDeltaTime);
         }

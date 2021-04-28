@@ -12,18 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd96d98b9c424bec993ae78dfcb8d763, type: 3}
   m_Name: ShieldsConfig
   m_EditorClassIdentifier: 
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  meshPiece: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  pieceScale: {x: 0.5, y: 0.5, z: 0.5}
-  spacing: 0.05
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  shieldAmount: 3
-  shieldDimension:
-    x: 5
-    y: 3
-  startAnchor: {x: -7, y: -0.5}
-  shieldSpacing: 4
+  pieceData:
+    shieldHealth: 3
+    meshPiece: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+    pieceScale: {x: 0.4, y: 0.4, z: 0.4}
+    spacing: 0.05
+  shieldData:
+    shieldCount: 3
+    shieldDimension:
+      x: 5
+      y: 3
+    startAnchor: {x: -5.5, y: -0.8}
+    shieldSpacing: 3.1

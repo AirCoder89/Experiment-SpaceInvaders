@@ -13,8 +13,8 @@ namespace Utils.Array2D
     public class Cell : GameView3D
     {
         public bool IsVisited { get; set; }
-        public Vector2Int Location { get; private set; }
-        public CellData Data { get; private set; }
+        protected Vector2Int Location { get; private set; }
+        protected CellData Data { get; private set; }
         public ITweenJob TweenJob { get; set; }
         
         public Cell(string inName, Vector2Int inPosition, CellData inData, Mesh inMesh, Material inMaterial = null) : base(inName, inMesh, inMaterial)
@@ -23,6 +23,11 @@ namespace Utils.Array2D
             Location = inPosition;
         }
 
+        public virtual void BindData(CellData inData)
+        {
+            Data = inData;
+            UpdateShape(Data.mesh, Renderer.material);
+        }
        
         public Cell GetNeighbor<T>(Direction inDirection, Matrix<T> inMatrix) where T : Cell
         {

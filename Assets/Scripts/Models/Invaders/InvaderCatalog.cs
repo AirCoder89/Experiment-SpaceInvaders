@@ -1,25 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Models.Invaders
 {
+   
     [Serializable]
     public struct InvaderCatalog
     {
+        public InvadersLabel[] indexer;
         public List<InvaderDataSet> invaders;
         public List<Color>          colors;
+
+        public Color GetRandomColor()
+            => colors[Random.Range(0, colors.Count)];
         
-        public CellData GetRandom()
+        /// <returns>random CellData with a random color</returns>
+        public CellData GetRandomData()
         {
             var data = invaders[Random.Range(0, invaders.Count)];
             return new CellData()
             {
                 mesh = data.mesh,
                 value = data.value,
-                color = colors[Random.Range(0, colors.Count)]
+                color = GetRandomColor()
             };
+        }
+
+        /// <returns>CellData with a random color by invaders label</returns>
+        public CellData GetDataByLabel(InvadersLabel inLabel)
+        {
+            var data = invaders.FirstOrDefault(d => d.label == inLabel);
+            return new CellData()
+            {
+                mesh = data.mesh,
+                value = data.value,
+                color = GetRandomColor()
+            };
+        }
+
+        /// <returns>CellData with a random color by invaders' row index</returns>
+        public CellData GetDataByInvaderIndex(int index)
+        {
+            if (index >= indexer.Length) throw new Exception($"Invalid indexer size");
+            return GetDataByLabel(indexer[index]);
         }
     }
 }

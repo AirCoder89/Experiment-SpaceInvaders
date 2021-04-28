@@ -31,16 +31,16 @@ namespace Views
         private void GeneratePieces()
         {
             _pieces = new Dictionary<string, ShieldPiece>();
-            for (var i = 0; i < _config.shieldDimension.y; i++)
+            for (var i = 0; i < _config.shieldData.shieldDimension.y; i++)
             {
-                var isLast = i == _config.shieldDimension.y - 1;
-                for (var j = 0; j < _config.shieldDimension.x; j++)
+                var isLast = i == _config.shieldData.shieldDimension.y - 1;
+                for (var j = 0; j < _config.shieldData.shieldDimension.x; j++)
                 {
-                    if (j == (int) (_config.shieldDimension.x / 2) && isLast) continue;
+                    if (j == (int) (_config.shieldData.shieldDimension.x / 2) && isLast) continue;
                     var pieceName = $"Piece [{i},{j}]";
-                    var piece = new ShieldPiece(pieceName, _config, _config.meshPiece);
+                    var piece = new ShieldPiece(pieceName, _config);
                     piece.SetParent(gameObject.transform);
-                    piece.gameObject.transform.localScale = _config.pieceScale;
+                    piece.gameObject.transform.localScale = _config.pieceData.pieceScale;
                     UpdatePosition(piece.gameObject, new Utils.Array2D.Vector2Int(i,j));
                     _pieces.Add(pieceName, piece);
                 }
@@ -49,7 +49,7 @@ namespace Views
 
         public float GetWidth()
         {
-            return (_config.pieceScale.x + _config.spacing) * 5;
+            return (_config.pieceData.pieceScale.x + _config.pieceData.spacing) * 5;
         }
         
         private void UpdatePosition(GameObject inObject, Utils.Array2D.Vector2Int inLocation)
@@ -57,8 +57,8 @@ namespace Views
         
         private Vector3 LocationToPosition(Utils.Array2D.Vector2Int inLocation)
         {
-            var spacing = new Vector3(_config.spacing * inLocation.y, -_config.spacing * inLocation.x, 0f);
-            var position = new Vector3(_config.pieceScale.x * inLocation.y, -_config.pieceScale.y * inLocation.x, 0f);
+            var spacing = new Vector3(_config.pieceData.spacing * inLocation.y, -_config.pieceData.spacing * inLocation.x, 0f);
+            var position = new Vector3(_config.pieceData.pieceScale.x * inLocation.y, -_config.pieceData.pieceScale.y * inLocation.x, 0f);
             return position + spacing;
         }
        

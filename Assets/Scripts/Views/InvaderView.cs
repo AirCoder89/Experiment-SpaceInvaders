@@ -1,4 +1,7 @@
-﻿using Models;
+﻿using System;
+using Core;
+using Interfaces;
+using Models;
 using Models.SystemConfigs;
 using UnityEngine;
 using Utils.Array2D;
@@ -6,16 +9,49 @@ using Vector2Int = Utils.Array2D.Vector2Int;
 
 namespace Views
 {
-    public class InvaderView : Cell
+    public class InvaderView : Cell, IDestructible
     {
-        private GridConfig _gridConfig;
-       
+        public event Action<GameView> onDestroyed;
+        public bool                   IsAlive { get; private set; }
+        public int Health
+        {
+            get => _health;
+            private set
+            {
+                _health = value;
+                IsAlive = _health > 0;
+                if (IsAlive) return;
+                    //kill
+                    onDestroyed?.Invoke(this);
+                    Visibility = false;
+                    //Todo: add sfx
+            }
+        }
+
+        private readonly int  _startHealth;
+        private GridConfig    _gridConfig;
+        private int           _health;
+        
         public InvaderView(string inName, CellData inData, GridConfig inConfig)  : base(inName, inData.position, inData, inData.mesh, inConfig.material)
         {
+            _startHealth = Health = 1; //one hit
+            
             _gridConfig = inConfig;
             UpdatePosition();
              Renderer.material.color = inData.color;
              SetScale(Vector3.zero);
+             
+             //-adjust collider
+             Collider.center = new Vector3(0f, 0.18f, 0f);
+             Collider.size = new Vector3(1f, 0.81f, 1f);
+        }
+
+        public override void BindData(CellData inData)
+        {
+            base.BindData(inData);
+            UpdatePosition();
+            Renderer.material.color = inData.color;
+            //SetScale(Vector3.zero);
         }
        
         public void UpdatePosition()
@@ -32,6 +68,18 @@ namespace Views
         {
             base.Destroy();
             _gridConfig = null;
+        }
+
+        public void TakeDamage()
+        {
+            if(!IsAlive) return;
+            Health--;
+        }
+
+        public void Revive()
+        {
+            Health = _startHealth;
+            Visibility = true;
         }
 
         public void Select()

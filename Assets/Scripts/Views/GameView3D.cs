@@ -8,7 +8,7 @@ namespace Views
         protected MeshRenderer Renderer;
         protected MeshFilter   Filter;
         protected BoxCollider  Collider;
-        
+
         public GameView3D(string inName, Mesh inMesh, Material inMaterial = null) : base(inName)
         {
             AssignUnityComponents();
@@ -35,11 +35,9 @@ namespace Views
             Filter = gameObject.AddComponent<MeshFilter>();
             Collider = gameObject.AddComponent<BoxCollider>();
             Collider.isTrigger = true;
-            Collider.center = new Vector3(-0.11f, -0.24f, 0f);
-            Collider.size = new Vector3(0.9f, 0.9f, 0.9f);
         }
         
-        private void UpdateShape(Mesh inMesh, Material inMaterial)
+        protected void UpdateShape(Mesh inMesh, Material inMaterial)
         {
             var material = inMaterial == null
                 ? Main.Settings.defaultMaterial

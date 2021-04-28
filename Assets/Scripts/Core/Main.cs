@@ -24,7 +24,30 @@ namespace Core
         private static Main    _instance;
         private GameStates     _currentState;
 
-
+        public Vector2Int location;
+        public int column;
+        
+        [Button("Select Last")]
+        private void SelectLast()
+        {
+            GetSystem<GridSystem>().SelectLast(column);
+        }
+        [Button("Unselect Last")]
+        private void UnselectLast()
+        {
+            GetSystem<GridSystem>().UnselectLast(column);
+        }
+        
+        [Button("Damage")]
+        private void Damage()
+        {
+            GetSystem<GridSystem>().TakeDamage(location);
+        }
+        [Button("Revive")]
+        private void Revive()
+        {
+            GetSystem<GridSystem>().Revive(location);
+        }
         private void Awake()
         {
             if (_instance != null)  return;

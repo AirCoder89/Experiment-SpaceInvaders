@@ -7,10 +7,9 @@ namespace Models
     [Serializable]
     public struct CellData
     {
-        public int value;
-        public Color color;
-        public Mesh mesh;
-        public Vector2Int position;
-        
+        public int         value;
+        public Color       color;
+        public Mesh        mesh;
+        public Vector2Int  position;
     }
 }

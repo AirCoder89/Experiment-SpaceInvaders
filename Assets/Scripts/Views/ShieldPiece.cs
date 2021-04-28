@@ -1,41 +1,51 @@
 ﻿
+using System;
+using Core;
+using Interfaces;
+using Models;
 using Models.SystemConfigs;
 using UnityEngine;
 
 namespace Views
 {
-    public class ShieldPiece : GameView3D
+    public class ShieldPiece : GameView3D, IDestructible
     {
-        public int ElapsedHits { get; private set; }
-        public ShieldPiece(string inName, ShieldConfig inConfig, Mesh inMesh, Material inMaterial = null) : base(inName, inMesh, inMaterial)
+        public event Action<GameView> onDestroyed;
+        public bool                   IsAlive { get; private set; }
+        public int Health
         {
-            /*_collider = AddComponent(new GameCollider(gameObject, inConfig.pieceScale, true, false, inConfig.targetLayer));
-            _collider.onHitEnter += OnHitEnter;
-            _collider.onHitStay += OnHitStay;
-            _collider.onHitExit += OnHitExit;*/
-            gameObject.layer = inConfig.layerMask;
+            get => _health;
+            private set
+            {
+                _health = value;
+                IsAlive = _health > 0;
+                if (IsAlive) return;
+                //kill
+                onDestroyed?.Invoke(this);
+                Visibility = false;
+                //Todo: add sfx
+            }
+        }
+        
+        private readonly int  _startHealth;
+        private int           _health;
+        
+        public ShieldPiece(string inName, ShieldConfig inConfig)  : base(inName, inConfig.pieceData.meshPiece)
+        {
+            _startHealth = Health = inConfig.pieceData.shieldHealth;
+        }
+        
+        public void TakeDamage()
+        {
+            if(!IsAlive) return;
+            Health--;
         }
 
-        public override void Destroy()
+        public void Revive()
         {
-            base.Destroy();
+            Health = _startHealth;
+            Visibility = true;
         }
-
-        private void OnHitExit(GameObject obj)
-        {
-            Debug.Log($"HitExit {obj.name}");
-        }
-
-        private void OnHitStay(GameObject obj)
-        {
-            Debug.Log($"HitStay {obj.name}");
-        }
-
-        private void OnHitEnter(GameObject obj)
-        {
-            Debug.Log($"HitEnter {obj.name}");
-        }
-
     }
 
 }
