@@ -16,38 +16,17 @@ namespace Core
         public static GameSettings Settings => _instance.settings;
         [BoxGroup("Settings")][Required][SerializeField][Expandable] private GameSettings settings;
         
+        [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig levelConfig;
+        [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig playerConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig gridConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig shieldsConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig invadersConfig;
+        [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig shootingConfig;
 
         private GameController _controller;
         private static Main    _instance;
         private GameStates     _currentState;
 
-        public Vector2Int location;
-        public int column;
-        
-        [Button("Select Last")]
-        private void SelectLast()
-        {
-            GetSystem<GridSystem>().SelectLast(column);
-        }
-        [Button("Unselect Last")]
-        private void UnselectLast()
-        {
-            GetSystem<GridSystem>().UnselectLast(column);
-        }
-        
-        [Button("Damage")]
-        private void Damage()
-        {
-            GetSystem<GridSystem>().TakeDamage(location);
-        }
-        [Button("Revive")]
-        private void Revive()
-        {
-            GetSystem<GridSystem>().Revive(location);
-        }
         private void Awake()
         {
             if (_instance != null)  return;
@@ -97,9 +76,12 @@ namespace Core
             _controller = new GameController();
             _controller
                 .AddSystem(new TimingSystem())
+                .AddSystem(new LevelSystem(levelConfig))
+                .AddSystem(new PlayerSystem(playerConfig))
                 .AddSystem(new GridSystem(gridConfig))
                 .AddSystem(new ShieldsSystem(shieldsConfig))
-                .AddSystem(new InvadersSystem(invadersConfig));
+                .AddSystem(new InvadersSystem(invadersConfig))
+                .AddSystem(new ShootingSystem(shootingConfig));
         }
         
         public static T GetSystem<T>() where T : GameSystem

@@ -1,6 +1,4 @@
-﻿using System;
-using AirCoder.TJ.Core.Extensions;
-using AirCoder.TJ.Core.Jobs;
+﻿using AirCoder.TJ.Core.Extensions;
 using Core;
 using Interfaces;
 using Models.SystemConfigs;
@@ -25,13 +23,13 @@ namespace Systems
         private bool           _showSpecialShip;
         
         private GameView3D _specialShip;
-        private Timer      _specialShipTimer;
+        private Timer      _shootingTimer;
         
         public InvadersSystem(SystemConfig inConfig = null) : base(inConfig)
         {
             if(inConfig != null) _config = inConfig as InvadersConfig;
-            CreateEdges();
-            
+            _shootingTimer = new Timer(_config.behaviours.shootingRate, Shoot);
+            LevelSystem.OnHitVerticalEdges += () => _hasToReverse = true;
             //- Special Ship
             /*_showSpecialShip = false;
             _specialShip = new GameView3D("SpecialShip", _config.specialShipMesh);
@@ -39,15 +37,22 @@ namespace Systems
             _specialShipTimer = new Timer(_config.specialShipAppearanceRate, ShowSpecialShip);*/
         }
 
+        private void Shoot()
+        {
+            var randomColumn = Random.Range(0, _gridSystem.Matrix.Columns.Length);
+            var lastInvader = _gridSystem.GetLastInvader(randomColumn);
+            lastInvader?.Shoot(_config.behaviours.targetLayer);
+        }
+
         private void ShowSpecialShip()
         {
-            _specialShipTimer.Stop();_specialShip.gameObject.transform
+            /*_specialShipTimer.Stop();_specialShip.gameObject.transform
                 .TweenLocalPosition(_config.specialShipTargetPos, _config.specialShipSpeed)
                 .OnComplete(() =>
                 {
                     _specialShip.SetPosition(_config.specialShipStartPos);
                     _specialShipTimer.Start();
-                }).Play();
+                }).Play();*/
         }
 
         public override void Start()
@@ -55,7 +60,7 @@ namespace Systems
             _currentDirection = Direction.Right;
             _timeCounter = 0f;
             _canMove = true;
-            //_specialShipTimer.Start();
+            _shootingTimer.Start();
         }
 
         public void Tick(float inDeltaTime)
@@ -105,23 +110,5 @@ namespace Systems
                 }
             });
         }
-        
-        private void CreateEdges()
-        {
-            //- Left Edge
-            var leftEdge = new GameObject("LeftEdge");
-            leftEdge.transform.position = _config.edges.leftPos;
-            var leftHitEdge = leftEdge.AddComponent<HitDetector>();
-            leftHitEdge.Initialize(_config.edges.size, false);
-            leftHitEdge.onHitEnter += o => _hasToReverse = true;
-            
-            //- Right Edge
-            var rightEdge = new GameObject("RightEdge");
-            rightEdge.transform.position = _config.edges.rightPos;
-            var rightHitEdge = rightEdge.AddComponent<HitDetector>();
-            rightHitEdge.Initialize(_config.edges.size, false);
-            rightHitEdge.onHitEnter += o => _hasToReverse = true;
-        }
-
     }
 }

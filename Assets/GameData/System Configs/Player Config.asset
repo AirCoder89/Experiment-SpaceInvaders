@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d34b5312574ee4b7898b713081915c, type: 3}
+  m_Name: Player Config
+  m_EditorClassIdentifier: 
+  speed: 5
+  fireRate: 0.1
+  health: 1
+  lives: 3
+  score: 0
+  mesh: {fileID: -4664382578460312087, guid: 4f46c4e4b408f5a4ca798a1920949522, type: 3}
+  color: {r: 0.6156863, g: 0.14901961, b: 0.3019608, a: 1}
+  startPosition: {x: 0, y: -3.65, z: 0}
+  movementRange: {x: -10.22, y: 10.22}
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 3328

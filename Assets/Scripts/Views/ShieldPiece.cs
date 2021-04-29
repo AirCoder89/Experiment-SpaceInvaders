@@ -2,9 +2,9 @@
 using System;
 using Core;
 using Interfaces;
-using Models;
 using Models.SystemConfigs;
 using UnityEngine;
+using Utils;
 
 namespace Views
 {
@@ -30,7 +30,7 @@ namespace Views
         private readonly int  _startHealth;
         private int           _health;
         
-        public ShieldPiece(string inName, ShieldConfig inConfig)  : base(inName, inConfig.pieceData.meshPiece)
+        public ShieldPiece(string inName, ShieldConfig inConfig)  : base(inName, inConfig.pieceData.meshPiece, LayersList.Shields)
         {
             _startHealth = Health = inConfig.pieceData.shieldHealth;
         }

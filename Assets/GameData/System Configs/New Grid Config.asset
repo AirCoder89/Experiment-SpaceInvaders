@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tweenDirection: 1
   tweenAxis: 1
-  tweenSpeed: 0.08
+  tweenSpeed: 0.03
   tweenEase: 38
   dimension:
     x: 10

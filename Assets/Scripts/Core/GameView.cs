@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Interfaces;
 using UnityEngine;
+using Utils;
 using Object = UnityEngine.Object;
 
 namespace Core
 {
     public abstract class GameView
     {
-        public static event Action<Type, IComponent> OnAttachComponent;
-        public static event Action<Type, IComponent> OnDetachComponent;
-        public Dictionary<Type, IComponent> Components{ get; private set; }
-        private List<string> _attachedComponents;
-
         public Vector3 Position => gameObject.transform.localPosition;
         
+        private Dictionary<Type, Component> _components;
         private bool _visibility;
         public bool Visibility
         {
@@ -27,13 +23,15 @@ namespace Core
         }
         
         public GameObject gameObject { get; private set; }
+        public Transform transform { get; private set; }
         
         public GameView(string inName)
         {
             gameObject = new GameObject(inName);
+            transform = gameObject.transform;
             Visibility = true;
-            _attachedComponents = new List<string>();
-            Components = new Dictionary<Type, IComponent>();
+            _components = new Dictionary<Type, Component>();
+            ObjectMap.Subscribe(gameObject.GetInstanceID(), this);
         }
         
         public void SetParent(Transform inParent) => gameObject.transform.parent = inParent;
@@ -42,53 +40,43 @@ namespace Core
         
         public virtual void Destroy()
         {
-            foreach (var component in Components)
-            {
-                Debug.Log($"remove Component {component.Key}");
-                component.Value.Destroy();
-            }
-            
+            RemoveAllComponents();
+            ObjectMap.Unsubscribe(gameObject.GetInstanceID());
             Object.Destroy(this.gameObject);
             gameObject = null;
         }
         
-        public bool HasComponent<T>() where T : IComponent
-            => Components.ContainsKey(typeof(T));
+        public bool HasComponent<T>() where T : Component
+            => _components.ContainsKey(typeof(T));
         
-        public T AddComponent<T>(T inComponent) where T : IComponent
+        public T AddComponent<T>() where T : Component
         {
-            if (HasComponent<T>())  return inComponent; 
-            _attachedComponents.Add(typeof(T).Name);
-            Components.Add(typeof(T), inComponent);
-            inComponent.Attach(this);
-            Debug.Log($"AddComponent<T>");
-            OnAttachComponent?.Invoke(typeof(T), inComponent);
-            return inComponent;
+            if (HasComponent<T>())  return _components[typeof(T)] as T;
+            var newComponent = gameObject.AddComponent<T>();
+            _components.Add(typeof(T), newComponent);
+            return newComponent;
         }
 
-        public T GetComponent<T>() where T : IComponent
+        public T GetComponent<T>() where T : Component
         {
             if (!HasComponent<T>()) throw new NullReferenceException($"Component not found");
-            var component = (T) Components[typeof(T)];
+            var component = (T) _components[typeof(T)];
             return component;
         }
         
-        public bool RemoveComponent<T>() where T : IComponent
+        public bool RemoveComponent<T>() where T : Component
         {
             if (!HasComponent<T>()) return false;
-            var component = Components[typeof(T)];
-            OnDetachComponent?.Invoke(typeof(T), component);
-            _attachedComponents.Remove(typeof(T).Name);
-            var res =  Components.Remove(typeof(T));
-            component.Destroy();
+            var component = _components[typeof(T)];
+            var res =  _components.Remove(typeof(T));
+            Object.Destroy(component);
             return res;
         }
 
         public void RemoveAllComponents()
         {
-            _attachedComponents.Clear();
-            foreach (var component in Components)
-                component.Value.Destroy();
+            foreach (var component in _components)
+                Object.Destroy(component.Value);
         }
     }
 }

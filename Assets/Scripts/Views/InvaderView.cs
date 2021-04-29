@@ -1,4 +1,5 @@
 ﻿using System;
+using Systems;
 using Core;
 using Interfaces;
 using Models;
@@ -28,9 +29,13 @@ namespace Views
             }
         }
 
-        private readonly int  _startHealth;
-        private GridConfig    _gridConfig;
-        private int           _health;
+        private ShootingSystem _shootingSystem 
+            => _shoot ?? (_shoot = Main.GetSystem<ShootingSystem>());
+        
+        private ShootingSystem  _shoot;
+        private readonly int    _startHealth;
+        private GridConfig      _gridConfig;
+        private int             _health;
         
         public InvaderView(string inName, CellData inData, GridConfig inConfig)  : base(inName, inData.position, inData, inData.mesh, inConfig.material)
         {
@@ -38,19 +43,19 @@ namespace Views
             
             _gridConfig = inConfig;
             UpdatePosition();
-             Renderer.material.color = inData.color;
+             GetComponent<MeshRenderer>().material.color = inData.color;
              SetScale(Vector3.zero);
              
              //-adjust collider
-             Collider.center = new Vector3(0f, 0.18f, 0f);
-             Collider.size = new Vector3(1f, 0.81f, 1f);
+             GetComponent<BoxCollider>().center = new Vector3(0f, 0.18f, 0f);
+             GetComponent<BoxCollider>().size = new Vector3(1f, 0.81f, 1f);
         }
 
         public override void BindData(CellData inData)
         {
             base.BindData(inData);
             UpdatePosition();
-            Renderer.material.color = inData.color;
+            GetComponent<MeshRenderer>().material.color = inData.color;
             //SetScale(Vector3.zero);
         }
        
@@ -84,13 +89,17 @@ namespace Views
 
         public void Select()
         {
-            Renderer.material.color = Color.magenta;
+            GetComponent<MeshRenderer>().material.color = Color.magenta;
         }
 
         public void UnSelect()
         {
-            Renderer.material.color = Data.color;
+            GetComponent<MeshRenderer>().material.color = Data.color;
         }
 
+        public void Shoot(LayerMask inLayerMask)
+        {
+            _shootingSystem.Shoot(Position, Vector3.down, inLayerMask);
+        }
     }
 }

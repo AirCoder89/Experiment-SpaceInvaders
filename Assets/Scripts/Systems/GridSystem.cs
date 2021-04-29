@@ -13,6 +13,7 @@ namespace Systems
     public class GridSystem : GameSystem, ITick
     {
         public bool IsReady { get; private set; }
+        public Matrix<InvaderView> Matrix => _matrix;
         
         private readonly GridConfig _config;
         private readonly Transform  _gridHolder;
@@ -74,12 +75,13 @@ namespace Systems
             inLines[inLines.Length-1].PlayScaleTween(_config.tweenDirection); 
         }
 
-        public void SelectLast(int inColumn)
+        public InvaderView GetLastInvader(int inColumn)
         {
             var column = _matrix.Columns[inColumn];
-            if(!(column.GetLastAlive() is InvaderView lastAlive)) return;
-            lastAlive.Select();
+            if(!(column.GetLastAlive() is InvaderView lastAlive)) return null;
+            return lastAlive;
         }
+        
         public void UnselectLast(int inColumn)
         {
             var column = _matrix.Columns[inColumn];

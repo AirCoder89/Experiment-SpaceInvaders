@@ -8,7 +8,7 @@ namespace Models.SystemConfigs
     public class InvadersConfig : SystemConfig
     {
         public InvadersMovementData  movement;
-        public EdgesData             edges;
+        public InvaderBehaviours     behaviours;
 
         [BoxGroup("Special Ship")] public Mesh    specialShipMesh;
         [BoxGroup("Special Ship")] public Vector3 specialShipStartPos;

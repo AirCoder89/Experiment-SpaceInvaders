@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ShieldsConfig
   m_EditorClassIdentifier: 
   pieceData:
-    shieldHealth: 3
+    shieldHealth: 1
     meshPiece: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
     pieceScale: {x: 0.4, y: 0.4, z: 0.4}
     spacing: 0.05

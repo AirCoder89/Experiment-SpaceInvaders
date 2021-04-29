@@ -17,7 +17,7 @@ namespace Utils.Array2D
         protected CellData Data { get; private set; }
         public ITweenJob TweenJob { get; set; }
         
-        public Cell(string inName, Vector2Int inPosition, CellData inData, Mesh inMesh, Material inMaterial = null) : base(inName, inMesh, inMaterial)
+        public Cell(string inName, Vector2Int inPosition, CellData inData, Mesh inMesh, Material inMaterial = null) : base(inName, inMesh,LayersList.Invaders, inMaterial)
         {
             Data = inData;
             Location = inPosition;
@@ -26,7 +26,7 @@ namespace Utils.Array2D
         public virtual void BindData(CellData inData)
         {
             Data = inData;
-            UpdateShape(Data.mesh, Renderer.material);
+            UpdateShape(Data.mesh, GetComponent<MeshRenderer>().material);
         }
        
         public Cell GetNeighbor<T>(Direction inDirection, Matrix<T> inMatrix) where T : Cell
