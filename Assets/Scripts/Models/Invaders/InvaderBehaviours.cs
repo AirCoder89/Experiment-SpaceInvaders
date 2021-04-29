@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Models
+namespace Models.Invaders
 {
     [Serializable]
     public struct InvaderBehaviours

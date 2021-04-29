@@ -21,6 +21,7 @@ namespace Systems
             if(inConfig != null) _config = inConfig as ShootingConfig;
             
             _holder = new GameObject("Bullets Holder").transform;
+            _holder.SetParent(LevelState.Instance.transform);
             _holder.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
             _bulletsInScene = new HashSet<GameView>();

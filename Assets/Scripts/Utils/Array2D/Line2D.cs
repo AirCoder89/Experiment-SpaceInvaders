@@ -8,6 +8,7 @@ namespace Utils.Array2D
 {
     public class Line2D<T> where T : Cell
     {
+        public int Count => _values.Length;
         public Action TweenCallback { get; set; }
         public bool Visibility
         {

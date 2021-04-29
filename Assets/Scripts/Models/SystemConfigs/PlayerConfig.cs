@@ -6,8 +6,9 @@ namespace Models.SystemConfigs
     [CreateAssetMenu(menuName = "Game/System Config/Player System Config")]
     public class PlayerConfig : SystemConfig
     {
-        public float  speed;
-        public float  fireRate;
+        [Range(0f,20f)] public float  speed;
+        [Range(0f,2f)]  public float  fireRate;
+        
         public int    health;
         public int    lives;
         public int    score;

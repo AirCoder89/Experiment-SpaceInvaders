@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Models
+namespace Models.Shields
 {
     [Serializable]
     public struct PieceData

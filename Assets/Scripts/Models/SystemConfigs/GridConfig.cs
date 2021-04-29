@@ -1,5 +1,6 @@
 ﻿using AirCoder.TJ.Core;
 using Core;
+using Models.Grid;
 using Models.Invaders;
 using UnityEngine;
 using Utils;
@@ -10,16 +11,8 @@ namespace Models.SystemConfigs
     [CreateAssetMenu(menuName = "Game/System Config/Grid System Config")]
     public class GridConfig : SystemConfig
     {
-        public TweenDirection     tweenDirection;
-        public TweenAxis          tweenAxis;
-        [Range(0,1)] public float tweenSpeed;
-        public EaseType           tweenEase;
-
-        public Vector2Int     dimension;
-        public Vector2        spacing;
-        public Vector2        padding;
-        public Vector2        cellSize;
-        public Material       material;
-        public InvaderCatalog invaders;
+        public GridEstablishingData  establishing;
+        public GridAnimationData     animation;
+        public InvaderCatalog        invaders;
     }
 }

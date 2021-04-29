@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AirCoder.TJ.Core;
+using Models.Grid;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -23,7 +25,7 @@ namespace Models.Invaders
             var data = invaders[Random.Range(0, invaders.Count)];
             return new CellData()
             {
-                mesh = data.mesh,
+                meshes = data.meshes,
                 value = data.value,
                 color = GetRandomColor()
             };
@@ -35,7 +37,7 @@ namespace Models.Invaders
             var data = invaders.FirstOrDefault(d => d.label == inLabel);
             return new CellData()
             {
-                mesh = data.mesh,
+                meshes = data.meshes,
                 value = data.value,
                 color = GetRandomColor()
             };

@@ -10,11 +10,11 @@ namespace Interfaces
     /// 
     public interface IDestructible
     {
-        event Action<GameView> onDestroyed; 
         bool IsAlive { get; }
         int Health { get; }
 
         void TakeDamage();
+        void Kill();
         void Revive();
     }
 }

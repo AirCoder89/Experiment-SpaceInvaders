@@ -2,7 +2,7 @@
 using UnityEngine;
 using Vector2Int = Utils.Array2D.Vector2Int;
 
-namespace Models
+namespace Models.Shields
 {
     [Serializable]
     public struct ShieldData
@@ -10,6 +10,7 @@ namespace Models
         public int        shieldCount;
         public Vector2Int shieldDimension;
         public Vector2    startAnchor;
+        [Range(0f,2f)] 
         public float      shieldSpacing;
     }
 }

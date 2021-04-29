@@ -21,6 +21,16 @@ namespace Utils.Array2D
                 _rows[x][y] = value;
             }
         }
+        
+        public Cell this[Vector2Int inLocation]
+        {
+            get => _columns[inLocation.y][inLocation.x];
+            set
+            {
+                _columns[inLocation.y][inLocation.x] = value;
+                _rows[inLocation.x][inLocation.y] = value;
+            }
+        }
 
         private Line2D<Cell>[]  _columns;
         private Line2D<Cell>[]  _rows;

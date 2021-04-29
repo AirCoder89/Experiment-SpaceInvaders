@@ -22,6 +22,7 @@ namespace Core
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig shieldsConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig invadersConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig shootingConfig;
+        [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig animationConfig;
 
         private GameController _controller;
         private static Main    _instance;
@@ -81,11 +82,25 @@ namespace Core
                 .AddSystem(new GridSystem(gridConfig))
                 .AddSystem(new ShieldsSystem(shieldsConfig))
                 .AddSystem(new InvadersSystem(invadersConfig))
+                .AddSystem(new AnimationSystem(animationConfig))
                 .AddSystem(new ShootingSystem(shootingConfig));
         }
         
         public static T GetSystem<T>() where T : GameSystem
         => _instance._controller.GetSystem<T>();
+
+
+        public Vector2Int location;
+        [Button("Select")]
+        private void Select()
+        {
+            GetSystem<GridSystem>().SelectMatches(location);
+        }
+        [Button("UnSelect")]
+        private void UnSelect()
+        {
+            GetSystem<GridSystem>().ResetAllCells();
+        }
         
         [Button("Start Game")]
         private void StartGame()

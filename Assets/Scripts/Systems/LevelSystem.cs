@@ -3,6 +3,7 @@ using Core;
 using Models.SystemConfigs;
 using UnityEngine;
 using Utils;
+using Views;
 
 namespace Systems
 {
@@ -16,7 +17,10 @@ namespace Systems
         {
             if(inConfig != null) _config = inConfig as LevelConfig;
 
+            var levelState = new LevelState("[ Level State ]");
+            
             _holder = new GameObject("Edges").transform;
+            _holder.SetParent(levelState.transform);
             _holder.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         }
         

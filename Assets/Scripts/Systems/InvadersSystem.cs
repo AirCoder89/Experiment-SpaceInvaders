@@ -29,12 +29,25 @@ namespace Systems
         {
             if(inConfig != null) _config = inConfig as InvadersConfig;
             _shootingTimer = new Timer(_config.behaviours.shootingRate, Shoot);
+            InvaderView.OnDestroyed += DestroyInvaderMatches;
+            
             LevelSystem.OnHitVerticalEdges += () => _hasToReverse = true;
             //- Special Ship
             /*_showSpecialShip = false;
             _specialShip = new GameView3D("SpecialShip", _config.specialShipMesh);
             _specialShip.SetPosition(_config.specialShipStartPos);
             _specialShipTimer = new Timer(_config.specialShipAppearanceRate, ShowSpecialShip);*/
+        }
+
+        private void DestroyInvaderMatches(GameView inTarget)
+        {
+            if(!(inTarget is InvaderView invader)) return;
+                var matches = _gridSystem.GetMatches(invader.Location);
+                foreach (var cell in matches)
+                {
+                    if (cell is IDestructible destructible)
+                        destructible.Kill();
+                }
         }
 
         private void Shoot()

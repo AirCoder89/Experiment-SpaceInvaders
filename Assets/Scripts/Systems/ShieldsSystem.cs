@@ -15,6 +15,7 @@ namespace Systems
         {
             if(inConfig != null) _config = inConfig as ShieldConfig;
             _holder = new GameObject("Shields Holder").transform;
+            _holder.SetParent(LevelState.Instance.transform);
             _holder.position = Vector3.zero;
         }
         

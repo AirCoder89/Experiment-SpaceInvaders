@@ -1,5 +1,6 @@
 ﻿using AirCoder.NaughtyAttributes.Scripts.Core.MetaAttributes;
 using Core;
+using Models.Invaders;
 using UnityEngine;
 
 namespace Models.SystemConfigs

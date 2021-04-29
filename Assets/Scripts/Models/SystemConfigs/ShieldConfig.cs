@@ -1,5 +1,6 @@
 ﻿using AirCoder.NaughtyAttributes.Scripts.Core.MetaAttributes;
 using Core;
+using Models.Shields;
 using UnityEngine;
 using Views;
 using Vector2Int = Utils.Array2D.Vector2Int;

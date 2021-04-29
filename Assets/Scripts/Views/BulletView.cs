@@ -66,6 +66,7 @@ namespace Views
             GetComponent<HitDetector>().Enabled = false;
             Visibility = false;
             onDspawn?.Invoke(GetType(), this);
+            onDspawn = null;
         }
     }
 }

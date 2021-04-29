@@ -4,6 +4,7 @@ using AirCoder.TJ.Core.Extensions;
 using AirCoder.TJ.Core.Jobs;
 using Core;
 using Models;
+using Models.Grid;
 using UnityEngine;
 using Views;
 
@@ -13,7 +14,7 @@ namespace Utils.Array2D
     public class Cell : GameView3D
     {
         public bool IsVisited { get; set; }
-        protected Vector2Int Location { get; private set; }
+        public Vector2Int Location { get; private set; }
         protected CellData Data { get; private set; }
         public ITweenJob TweenJob { get; set; }
         
@@ -26,7 +27,7 @@ namespace Utils.Array2D
         public virtual void BindData(CellData inData)
         {
             Data = inData;
-            UpdateShape(Data.mesh, GetComponent<MeshRenderer>().material);
+            UpdateShape(Data.meshes[0], GetComponent<MeshRenderer>().material);
         }
        
         public Cell GetNeighbor<T>(Direction inDirection, Matrix<T> inMatrix) where T : Cell
@@ -62,6 +63,11 @@ namespace Utils.Array2D
                     result.Add(neighbor);
             });
             return result;
+        }
+
+        public void UpdateMesh(Mesh inMesh)
+        {
+            GetComponent<MeshFilter>().mesh = inMesh;
         }
     }
 }

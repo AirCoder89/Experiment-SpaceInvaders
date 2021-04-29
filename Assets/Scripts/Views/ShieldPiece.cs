@@ -20,10 +20,8 @@ namespace Views
                 _health = value;
                 IsAlive = _health > 0;
                 if (IsAlive) return;
-                //kill
-                onDestroyed?.Invoke(this);
-                Visibility = false;
-                //Todo: add sfx
+                    Kill();
+                
             }
         }
         
@@ -39,6 +37,13 @@ namespace Views
         {
             if(!IsAlive) return;
             Health--;
+        }
+
+        public void Kill()
+        {
+            onDestroyed?.Invoke(this);
+            Visibility = false;
+            //Todo: add sfx
         }
 
         public void Revive()

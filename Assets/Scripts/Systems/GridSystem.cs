@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core;
 using Interfaces;
 using Models.SystemConfigs;
@@ -23,6 +24,7 @@ namespace Systems
         {
             if(inConfig != null) _config = inConfig as GridConfig;
             _gridHolder = new GameObject("Grid Holder").transform;
+            _gridHolder.SetParent(LevelState.Instance.transform);
             _gridHolder.position = Vector3.zero;
         }
 
@@ -30,18 +32,18 @@ namespace Systems
         {
             Generate();
             IsReady = false;
-            if(_config.tweenAxis == TweenAxis.Vertical) OpeningAnimation(_matrix.Columns);
-            else if(_config.tweenAxis == TweenAxis.Horizontal) OpeningAnimation(_matrix.Rows);
+            if(_config.animation.openingAnimation.axis == TweenAxis.Vertical) OpeningAnimation(_matrix.Columns);
+            else if(_config.animation.openingAnimation.axis == TweenAxis.Horizontal) OpeningAnimation(_matrix.Rows);
         }
         
         private void Generate()
         {
-            _matrix = new Matrix<InvaderView>(_config.dimension.y, _config.dimension.x);
+            _matrix = new Matrix<InvaderView>(_config.establishing.dimension.y, _config.establishing.dimension.x);
             
-            for (var y = 0; y < _config.dimension.y; y++)
+            for (var y = 0; y < _config.establishing.dimension.y; y++)
             {
                 var invadersData = _config.invaders.GetDataByInvaderIndex(y);
-                for (var x = 0; x < _config.dimension.x; x++)
+                for (var x = 0; x < _config.establishing.dimension.x; x++)
                 {
                     invadersData.color = _config.invaders.GetRandomColor();
                     invadersData.position = new Vector2Int(y, x);
@@ -62,17 +64,18 @@ namespace Systems
             */
             
             //- end to start
+            var animationData = _config.animation.openingAnimation;
             for (var i = 0; i < inLines.Length; i++)
             {
-                inLines[i].TweenCellsScale(_config.tweenDirection, _config.tweenSpeed, _config.tweenEase);
+                inLines[i].TweenCellsScale(animationData.direction, animationData.speed, animationData.ease);
                 if (i == 0) inLines[i].TweenCallback = () => { IsReady = true;};
                 else
                 {
                     var index = i;
-                    inLines[i].TweenCallback = () => {inLines[index-1].PlayScaleTween(_config.tweenDirection); };
+                    inLines[i].TweenCallback = () => {inLines[index-1].PlayScaleTween(animationData.direction); };
                 }
             }
-            inLines[inLines.Length-1].PlayScaleTween(_config.tweenDirection); 
+            inLines[inLines.Length-1].PlayScaleTween(animationData.direction); 
         }
 
         public InvaderView GetLastInvader(int inColumn)
@@ -81,42 +84,25 @@ namespace Systems
             if(!(column.GetLastAlive() is InvaderView lastAlive)) return null;
             return lastAlive;
         }
-        
-        public void UnselectLast(int inColumn)
+
+        public void SelectMatches(Vector2Int inLocation)
         {
-            var column = _matrix.Columns[inColumn];
-            if(!(column.GetLastAlive() is InvaderView lastAlive)) return;
-            lastAlive.UnSelect();
-        }
-        
-        public void TakeDamage(Vector2Int inLocation)
-        {
-            var invader = _matrix[inLocation.y, inLocation.x];
-            if(invader is IDestructible destructible) 
-                destructible.TakeDamage();
-        }
-        public void Revive(Vector2Int inLocation)
-        {
-            var invader = _matrix[inLocation.y, inLocation.x];
-            if(invader is IDestructible destructible) 
-                destructible.Revive();
-        }
-        
-        public void GetMatches(Vector2Int inLocation)
-        {
-            var matches = _matrix.GetMatches(_matrix[inLocation.y, inLocation.x]);
-            foreach (var c in matches)
+            var matches = _matrix.GetMatches(_matrix[inLocation]);
+            foreach (var match in matches)
             {
-                var cell = c as InvaderView;
-                cell?.Select();
+                var invader = match as InvaderView;
+                invader?.Select();
             }
         }
+        
+        public List<Cell> GetMatches(Vector2Int inLocation)
+            => _matrix.GetMatches(_matrix[inLocation]);
 
         public void ResetAllCells()
         {
-            for (var y = 0; y < _config.dimension.y; y++)
+            for (var y = 0; y < _config.establishing.dimension.y; y++)
             {
-                for (var x = 0; x < _config.dimension.x; x++)
+                for (var x = 0; x < _config.establishing.dimension.x; x++)
                 {
                     var cell = _matrix[y, x] as InvaderView;
                     cell?.UnSelect();

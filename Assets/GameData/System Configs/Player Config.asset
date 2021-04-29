@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Player Config
   m_EditorClassIdentifier: 
   speed: 5
-  fireRate: 0.1
+  fireRate: 0.5
   health: 1
   lives: 3
   score: 0
