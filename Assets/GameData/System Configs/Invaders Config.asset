@@ -22,15 +22,15 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 2816
     shootingRate: 1
-  edges:
-    targetLayer:
-      serializedVersion: 2
-      m_Bits: 1024
-    size: {x: 0.5, y: 12, z: 1}
-    leftPos: {x: 10.85, y: 1, z: 0}
-    rightPos: {x: -10.85, y: 1, z: 0}
-  specialShipMesh: {fileID: -4664382578460312087, guid: d43291af8d7bb994db556c48faae9f8d, type: 3}
-  specialShipStartPos: {x: -11, y: 6, z: 0}
-  specialShipTargetPos: {x: 11, y: 6, z: 0}
+  specialShip:
+    mesh: {fileID: -4664382578460312087, guid: 44bdfcf9ff275ee4d856afa407faf083, type: 3}
+    color: {r: 0.16862746, g: 0.8117648, b: 0.6156863, a: 1}
+    startPos: {x: -12, y: 6.2, z: 0}
+    targetPos: {x: 12, y: 6.2, z: 0}
+    speed: 20
+    appearanceRate: 2
+  specialShipMesh: {fileID: -4664382578460312087, guid: 44bdfcf9ff275ee4d856afa407faf083, type: 3}
+  specialShipStartPos: {x: -12, y: 6.2, z: 0}
+  specialShipTargetPos: {x: 12, y: 6.2, z: 0}
   specialShipSpeed: 20
-  specialShipAppearanceRate: 10
+  specialShipAppearanceRate: 2

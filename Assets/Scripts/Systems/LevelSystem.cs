@@ -17,7 +17,7 @@ namespace Systems
         {
             if(inConfig != null) _config = inConfig as LevelConfig;
 
-            var levelState = new LevelState("[ Level State ]");
+            var levelState = new LevelState("[ Level State ]", GameStates.Game);
             
             _holder = new GameObject("Edges").transform;
             _holder.SetParent(levelState.transform);

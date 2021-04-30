@@ -8,5 +8,6 @@ namespace Utils
         public static LayerMask Invaders => LayerMask.NameToLayer("Invaders"); 
         public static LayerMask Shields => LayerMask.NameToLayer("Shield");
         public static LayerMask Other => LayerMask.NameToLayer("Other");
+        public static LayerMask Special => LayerMask.NameToLayer("Special");
     }
 }

@@ -36,7 +36,6 @@ namespace Views
 
         private void OnHit(GameObject inOther)
         {
-            Debug.Log($"Bullet Hit {inOther.name}");
             Despawn();
             var view = ObjectMap.GetView(inOther.GetInstanceID());
             if(view == null) return;

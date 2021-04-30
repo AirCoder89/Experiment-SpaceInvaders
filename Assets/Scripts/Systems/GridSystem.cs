@@ -54,15 +54,14 @@ namespace Systems
             }
         }
 
-        private void OpeningAnimation(Line2D<Cell>[] inLines)
-        {
-            /* in this approach I want to demonstrate sequence animations using callbacks.
+        /* in this approach I want to demonstrate sequence animations using callbacks.
                It's may consume a little bit more than interpolate the scale them with Update.
                We got benefits like flexibility to control the animation (LTR / RTL) or (Vertical/Horizontal) 
                and by using tween library, we can animate using ease equations and that will smooth the animation.
                also 
             */
-            
+        private void OpeningAnimation(Line2D<Cell>[] inLines)
+        {
             //- end to start
             var animationData = _config.animation.openingAnimation;
             for (var i = 0; i < inLines.Length; i++)
@@ -78,6 +77,30 @@ namespace Systems
             inLines[inLines.Length-1].PlayScaleTween(animationData.direction); 
         }
 
+        /// <summary>
+        /// when we want to check if the level is completed so we start iterating matrix column by column
+        /// and from each column we try to get the first (from top) alive invader. if we got one alive we break and
+        /// return false. otherwise if all column return null when we call GetFirstInvader that is mean all invaders has been destroyed.
+        /// </summary>
+        public bool IsLevelWin()
+        {
+            for (var i = 0; i < _matrix.Columns.Length; i++)
+            {
+                var lastInvader = GetFirstInvader(i);
+                if (lastInvader != null) return false;
+            }
+            return true;
+        }
+        
+        /// <returns>return the first alive invader from to given column index</returns>
+        public InvaderView GetFirstInvader(int inColumn)
+        {
+            var column = _matrix.Columns[inColumn];
+            if(!(column.GetFirstAlive() is InvaderView lastAlive)) return null;
+            return lastAlive;
+        }
+        
+        /// <returns>return the last alive invader from to given column index</returns>
         public InvaderView GetLastInvader(int inColumn)
         {
             var column = _matrix.Columns[inColumn];
@@ -85,6 +108,7 @@ namespace Systems
             return lastAlive;
         }
 
+        //test
         public void SelectMatches(Vector2Int inLocation)
         {
             var matches = _matrix.GetMatches(_matrix[inLocation]);

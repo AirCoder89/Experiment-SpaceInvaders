@@ -1,5 +1,4 @@
-﻿using AirCoder.TJ.Core.Extensions;
-using Core;
+﻿using Core;
 using Interfaces;
 using Models.SystemConfigs;
 using UnityEngine;
@@ -14,31 +13,47 @@ namespace Systems
         private GridSystem _gridSystem 
             => _grid ?? (_grid = Main.GetSystem<GridSystem>());
 
+        private readonly Timer _shootingTimer;
         private GridSystem     _grid;
         private InvadersConfig _config;
         private Direction      _currentDirection;
         private float          _timeCounter;
         private bool           _canMove;
         private bool           _hasToReverse;
-        private bool           _showSpecialShip;
-        
-        private GameView3D _specialShip;
-        private Timer      _shootingTimer;
+        private bool           _moveSpecialShip;
+        private float          _specialShipCounter;
+        private GameView3D     _specialShip;
         
         public InvadersSystem(SystemConfig inConfig = null) : base(inConfig)
         {
             if(inConfig != null) _config = inConfig as InvadersConfig;
             _shootingTimer = new Timer(_config.behaviours.shootingRate, Shoot);
-            InvaderView.OnDestroyed += DestroyInvaderMatches;
+            InvaderView.OnDestroyed += view =>
+            {
+                AudioSystem.Play(AudioLabel.HitInvaders);
+                DestroyInvaderMatches(view);
+            };
             
             LevelSystem.OnHitVerticalEdges += () => _hasToReverse = true;
-            //- Special Ship
-            /*_showSpecialShip = false;
-            _specialShip = new GameView3D("SpecialShip", _config.specialShipMesh);
-            _specialShip.SetPosition(_config.specialShipStartPos);
-            _specialShipTimer = new Timer(_config.specialShipAppearanceRate, ShowSpecialShip);*/
+            CreateSpecialShip();
+        }
+        
+        public override void Start()
+        {
+            _currentDirection = Direction.Right;
+            _timeCounter = 0f;
+            _canMove = true;
+            _shootingTimer.Start();
         }
 
+        private void CreateSpecialShip()
+        {
+            _moveSpecialShip = false;
+            _specialShipCounter = 0f;
+            _specialShip = new GameView3D("SpecialShip", _config.specialShip.mesh, LayersList.Special);
+            _specialShip.SetPosition(_config.specialShip.startPos);
+        }
+        
         private void DestroyInvaderMatches(GameView inTarget)
         {
             if(!(inTarget is InvaderView invader)) return;
@@ -57,25 +72,6 @@ namespace Systems
             lastInvader?.Shoot(_config.behaviours.targetLayer);
         }
 
-        private void ShowSpecialShip()
-        {
-            /*_specialShipTimer.Stop();_specialShip.gameObject.transform
-                .TweenLocalPosition(_config.specialShipTargetPos, _config.specialShipSpeed)
-                .OnComplete(() =>
-                {
-                    _specialShip.SetPosition(_config.specialShipStartPos);
-                    _specialShipTimer.Start();
-                }).Play();*/
-        }
-
-        public override void Start()
-        {
-            _currentDirection = Direction.Right;
-            _timeCounter = 0f;
-            _canMove = true;
-            _shootingTimer.Start();
-        }
-
         public void Tick(float inDeltaTime)
         {
             if(!IsRun|| !_gridSystem.IsReady) return;
@@ -84,9 +80,39 @@ namespace Systems
                 _timeCounter += inDeltaTime;
                 MoveInvadersLeftAndRight();
             }
-            
+
+            SpecialShipHandler(inDeltaTime);
         }
 
+        private void SpecialShipHandler(float inDeltaTime)
+        {
+            _specialShipCounter += inDeltaTime;
+            
+            if (!_moveSpecialShip)
+            { 
+                if (_specialShipCounter > _config.specialShip.appearanceRate)
+                {
+                    //Appearance time!
+                    _specialShip.SetPosition(_config.specialShip.startPos);
+                    _specialShipCounter = 0f;
+                    _moveSpecialShip = true;
+                }
+                return;
+            }
+
+            var step = _specialShipCounter / _config.specialShip.speed;
+            if (step > 1f)
+            {
+                //interpolation complete
+                _specialShipCounter = 0f;
+                _moveSpecialShip = false;
+            }
+            else _specialShip.SetPosition(InterpolatePosition(_specialShip.Position, _config.specialShip.targetPos, step));
+        }
+
+        private Vector3 InterpolatePosition(Vector3 inPosA, Vector3 inPosB, float inTime)
+            => inPosA + (inPosB - inPosA) * inTime;
+        
         private void MoveInvadersLeftAndRight()
         {
             var step = _timeCounter / _config.movement.stepDelay;

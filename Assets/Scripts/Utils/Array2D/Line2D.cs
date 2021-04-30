@@ -38,11 +38,21 @@ namespace Utils.Array2D
             set => _values[i] = value;
         }
         
-        public Line2D(int inSize)
+        public Line2D(int inSize) 
         {
             _values = new T[inSize];
         }
 
+        public T GetFirstAlive()
+        {
+            foreach (var t in _values)
+            {
+                if (t is IDestructible destructible && destructible.IsAlive)
+                    return t;
+            }
+            return null;
+        }
+        
         public T GetLastAlive()
         {
             for (var i = _values.Length -1; i >= 0 ; i--)

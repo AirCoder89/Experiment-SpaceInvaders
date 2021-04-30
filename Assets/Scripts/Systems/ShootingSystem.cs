@@ -39,6 +39,8 @@ namespace Systems
             var bullet = ObjectPool.GetObject<BulletView>();
             if (bullet == null)
                 throw new Exception($"Pool is Empty! increase the size of the buffer.");
+            
+            AudioSystem.Play(AudioLabel.Shoot);
             bullet.Launch(inPosition, inDirection, inLayerMask);
             bullet.onDspawn += OnDespawnBullet;
             _bulletsInScene.Add(bullet);
