@@ -5,6 +5,7 @@
         Menu,
         LeaderBoards,
         Game,
-        Pause
+        Pause,
+        Winning
     }
 }

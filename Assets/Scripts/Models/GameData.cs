@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Models.Database;
 using UnityEngine;
 
 namespace Models
@@ -8,8 +10,11 @@ namespace Models
     {
         public static event Action OnDataChanged;
 
+        public RegisterData Register { get; set; }
+        public LeaderBoardData Leaderboards { get; set; }
+
         private float _elapsedTime;
-        public float elapsedTime
+        public float ElapsedTime
         {
             get => _elapsedTime;
             set
@@ -20,7 +25,7 @@ namespace Models
         }
 
         private int _lives;
-        public int lives
+        public int Lives
         {
             get => _lives;
             set
@@ -31,7 +36,7 @@ namespace Models
         }
         
         private int _score;
-        public int score
+        public int Score
         {
             get => _score;
             set
@@ -49,6 +54,7 @@ namespace Models
         
         public void ResetData()
         {
+            Register = null;
             _lives = _startLives;
             _score = 0;
             _elapsedTime = 0f;

@@ -53,7 +53,7 @@ namespace Core
             InvaderView.OnDestroyed += view =>
             {
                 if (!Main.GetSystem<GridSystem>().IsLevelWin()) return;
-                OnLevelWin?.Invoke(0); //Todo : change with total score
+                OnLevelWin?.Invoke(Main.Data.Score);
             };
 
            // PlayerView.OnDestroyed += OnPlayerDestroyed;
@@ -67,9 +67,9 @@ namespace Core
 
         private void RevivePlayer()
         {
-            if (_gameData.lives > 0)
+            if (_gameData.Lives > 0)
             {
-                _gameData.lives--;
+                _gameData.Lives--;
                 GetSystem<PlayerSystem>().Reset();
             }
             else OnGameOver?.Invoke();
@@ -77,9 +77,9 @@ namespace Core
 
         private void OnPlayerDestroyed(PlayerView inPlayerView)
         {
-            if (_gameData.lives > 0)
+            if (_gameData.Lives > 0)
             {
-                _gameData.lives--;
+                _gameData.Lives--;
                 GetSystem<PlayerSystem>().Reset();
             }
             else OnGameOver?.Invoke();
@@ -94,7 +94,7 @@ namespace Core
         
         private void UpdateScore(int inScore)
         {
-            _gameData.score += inScore;
+            _gameData.Score += inScore;
         }
 
         public void Enter()

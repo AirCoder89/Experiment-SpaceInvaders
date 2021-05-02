@@ -46,8 +46,8 @@ namespace UI.HUD
         private void UpdateHud()
         {
             if(gameData == null) return;
-            scoreTxt.text = gameData.score.ToString("000");
-            lives.UpdateLives(gameData.lives);
+            scoreTxt.text = gameData.Score.ToString("000");
+            lives.UpdateLives(gameData.Lives);
         }
     }
 }

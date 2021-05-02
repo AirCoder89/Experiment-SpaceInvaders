@@ -12,9 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 062bf9f5d9274030911d94a3df3f343b, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
+  currentCountry: DK
   gameLoop: 1
   startState: 0
   defaultMaterial: {fileID: 2100000, guid: c682f4dcc90b8c941a010deec2f2d7aa, type: 2}
   targetFrameRate: 60
   cursorVisibility: 1
   vSync: 1
+  dbConfig:
+    isLocal: 1
+    timeOut: 5
+    retries: 3
+    retriesDelay: 1
+    enableDebug: 1

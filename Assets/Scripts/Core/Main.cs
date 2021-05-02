@@ -7,7 +7,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Systems;
+using Database;
+using LocalLeaderboards;
 using Models;
+using Models.Database;
 using Models.SystemConfigs;
 using UI.Core;
 
@@ -22,7 +25,7 @@ namespace Core
         [Required] [SerializeField] private UIManager uiManager;
         
         public static GameSettings Settings => _instance.settings;
-        //public static GameData Data => _instance.gameData;
+        public static GameData Data => _instance.gameData;
         
         [BoxGroup("Setup")][Required][SerializeField][Expandable] private GameSettings settings;
         [BoxGroup("Setup")][Required][SerializeField] private GameData                 gameData;
@@ -38,8 +41,10 @@ namespace Core
 
         private static Main      _instance;
         private GameState        _gameState;
+        private Counter          _timeCounter;
         private bool             _isRun;
         private bool             _isFirstRun;
+        
         private void Awake()
         {
             // --------------------------------------------------------------------------------
@@ -55,9 +60,12 @@ namespace Core
             // --------------------------------------------------------------------------------
             // Initializing & Establishing
             // --------------------------------------------------------------------------------
+            _timeCounter = new Counter(Settings.levelTime);
+            _timeCounter.Start();
             ApplyGameSettings();
             gameData.Initialize(((PlayerConfig)playerConfig).lives );
             gameData.ResetData();
+            DbManager.Initialize(Settings.dbConfig);
             Initialize();
             StateManager.UpdateGameState(Settings.startState);
 
@@ -119,9 +127,16 @@ namespace Core
         private void OnLevelWin(int inScore)
         {
             AudioSystem.Play(AudioLabel.LevelWin);
-            Debug.Log($"Level Win . your score {inScore}");
-            //Todo: add bonus & Check score if more than lowest score in the leader board
-            StateManager.UpdateGameState(States.Menu);
+            _gameState.Pause();
+            _timeCounter.Stop();
+            var bonus = Mathf.RoundToInt(_timeCounter.TimeRatio * Settings.timeBonus);
+            gameData.Score = bonus + inScore;
+
+            StateManager.UpdateGameState(
+                            gameData.Score > gameData.Leaderboards.lastRankScore 
+                            ? States.Winning 
+                            : States.Menu
+                        );
         }
 
         private void OnGameOver()
@@ -136,6 +151,25 @@ namespace Core
             _gameState.Start();
             if(Settings.gameLoop == GameLoop.Coroutine) 
                 StartCoroutine(Tick());
+        }
+
+        [Button]
+        private void SubmitPlayer()
+        {
+            //fil with fake player
+            LocalLeaderboardSystem.SubmitLeaderboard(Data.Register.idToken, 0, new SubmitData()
+            {
+                name = "Atef Sassi",
+                score = 1989,
+                tournamentId = Data.Leaderboards.@group.tournamentId
+            });
+            
+            LocalLeaderboardSystem.SubmitLeaderboard(Data.Register.idToken, 0, new SubmitData()
+            {
+                name = "Haifa Sayeh",
+                score = 589,
+                tournamentId = Data.Leaderboards.@group.tournamentId
+            });
         }
         
         [Button("New Game")]
@@ -214,6 +248,7 @@ namespace Core
         {
             if(!_isRun || Settings.gameLoop != GameLoop.Update) return;
             StateManager.Tick(Time.deltaTime);
+            _timeCounter.Tick(Time.deltaTime);
         }
 
         private IEnumerator Tick()
@@ -221,6 +256,7 @@ namespace Core
             while (_isRun)
             {
                 StateManager.Tick(Time.deltaTime);
+                _timeCounter.Tick(Time.deltaTime);
                 yield return null;
             }
         }
