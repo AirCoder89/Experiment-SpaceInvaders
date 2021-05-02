@@ -14,14 +14,15 @@ namespace Utils.Array2D
     public class Cell : GameView3D
     {
         public bool IsVisited { get; set; }
-        public Vector2Int Location { get; private set; }
+        public Vector2Int Location => Data.position;
         protected CellData Data { get; private set; }
         public ITweenJob TweenJob { get; set; }
         
-        public Cell(string inName, Vector2Int inPosition, CellData inData, Mesh inMesh, Material inMaterial = null) : base(inName, inMesh,LayersList.Invaders, inMaterial)
+        public Cell(string inName, CellData inData, Material inMaterial = null) 
+            : base(inName, inData.meshes[0], CollisionType.BoxCollider, inMaterial)
         {
             Data = inData;
-            Location = inPosition;
+            layerMask = LayersList.Invaders;
         }
 
         public virtual void BindData(CellData inData)

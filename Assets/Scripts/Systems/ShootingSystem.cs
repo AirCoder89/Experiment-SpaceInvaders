@@ -21,7 +21,7 @@ namespace Systems
             if(inConfig != null) _config = inConfig as ShootingConfig;
             
             _holder = new GameObject("Bullets Holder").transform;
-            _holder.SetParent(LevelState.Instance.transform);
+            _holder.SetParent(GameState.GameHolder);
             _holder.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
 
             _bulletsInScene = new HashSet<GameView>();
@@ -34,14 +34,15 @@ namespace Systems
                 ObjectPool.AddToPool<BulletView>(new BulletView("Bullet", _config.bullet, _holder));
         }
 
-        public void Shoot(Vector3 inPosition, Vector3 inDirection, LayerMask inLayerMask)
+        public void Shoot(Vector3 inPosition, Vector3 inDirection, LayerMask inLayerMask, string by)
         {
+            
             var bullet = ObjectPool.GetObject<BulletView>();
             if (bullet == null)
-                throw new Exception($"Pool is Empty! increase the size of the buffer.");
+                GameExceptions.Exception($"Pool is Empty! increase the size of the buffer.");
             
             AudioSystem.Play(AudioLabel.Shoot);
-            bullet.Launch(inPosition, inDirection, inLayerMask);
+            bullet.Launch(inPosition, inDirection, inLayerMask, by);
             bullet.onDspawn += OnDespawnBullet;
             _bulletsInScene.Add(bullet);
         }

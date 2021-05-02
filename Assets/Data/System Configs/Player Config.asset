@@ -16,11 +16,14 @@ MonoBehaviour:
   fireRate: 0.5
   health: 1
   lives: 3
-  score: 0
   mesh: {fileID: -4664382578460312087, guid: 4f46c4e4b408f5a4ca798a1920949522, type: 3}
   color: {r: 0.6156863, g: 0.14901961, b: 0.3019608, a: 1}
-  startPosition: {x: 0, y: -3.65, z: 0}
+  startPosition: {x: 0.8, y: -3.8, z: 0}
   movementRange: {x: -10.22, y: 10.22}
   targetLayer:
     serializedVersion: 2
     m_Bits: 7424
+  killAnimation:
+    target: {x: 0, y: 180, z: 0}
+    duration: 1
+    ease: 39

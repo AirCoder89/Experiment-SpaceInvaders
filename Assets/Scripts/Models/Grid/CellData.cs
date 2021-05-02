@@ -8,8 +8,9 @@ namespace Models.Grid
     public struct CellData
     {
         public int         value;
+        public int         health;
         public Color       color;
-        public Mesh[]        meshes;
+        public Mesh[]      meshes;
         public Vector2Int  position;
     }
 }

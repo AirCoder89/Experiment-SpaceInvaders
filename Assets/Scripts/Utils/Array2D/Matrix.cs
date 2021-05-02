@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Views;
 
@@ -8,7 +9,7 @@ namespace Utils.Array2D
     [Serializable]
     public class Matrix<T> where T : Cell
     {
-        public Vector2Int Dimension { get; private set; }
+        public Vector2Int Dimension { get; }
         public Line2D<Cell>[] Columns => _columns;
         public Line2D<Cell>[] Rows => _rows;
         
@@ -55,7 +56,7 @@ namespace Utils.Array2D
         public List<Cell> GetMatches(Cell inCell)
         {
             if (_matchesCells == null) _matchesCells = new List<Cell>();
-            else this._matchesCells.Clear();
+            else _matchesCells.Clear();
             
             ResetVisitedCells();
 
@@ -107,55 +108,58 @@ namespace Utils.Array2D
             }
         }
 
-        //-------- Animations Handlers
-        private MatrixLine _targetLine;
-        private Direction _direction;
-        private Action _moveCallback;
+        #region Animation Handlers
         
-        public void MoveLineTo(MatrixLine inLine, Direction inDirection, float inStepLength, float inStepDuration, Action inCallback = null)
-        {
-            _targetLine = inLine;
-            _direction = inDirection;
-            _moveCallback = inCallback;
-            MoveTargetLines(GetStartIndex(), inStepLength, inStepDuration);
-        }
-
-        private Line2D<Cell>[] GetTargetLines()
-            => _targetLine == MatrixLine.Row ? this.Rows : this.Columns;
-        
-        private void MoveTargetLines(int index, float inStepLength, float inStepDuration)
-        {
-            if (IsLineCompleted(index))
+            private MatrixLine _targetLine;
+            private Direction _direction;
+            private Action _moveCallback;
+            
+            public void MoveLineTo(MatrixLine inLine, Direction inDirection, float inStepLength, float inStepDuration, Action inCallback = null)
             {
-                //completed
-                _moveCallback?.Invoke();
-                return;
+                _targetLine = inLine;
+                _direction = inDirection;
+                _moveCallback = inCallback;
+                MoveTargetLines(GetStartIndex(), inStepLength, inStepDuration);
             }
-            GetTargetLines()[index].MoveTo(_direction, inStepLength, inStepDuration, () =>
+    
+            private Line2D<Cell>[] GetTargetLines()
+                => _targetLine == MatrixLine.Row ? this.Rows : this.Columns;
+            
+            private void MoveTargetLines(int index, float inStepLength, float inStepDuration)
             {
-                //next line
-                var next = NextLine(index);
-                MoveTargetLines(next, inStepLength, inStepDuration);
-            });
-        }
-
-        private int GetStartIndex()
-        {
-            if (_direction == Direction.Up) return 0;
-            return GetTargetLines().Length - 1;
-        }
+                if (IsLineCompleted(index))
+                {
+                    //completed
+                    _moveCallback?.Invoke();
+                    return;
+                }
+                GetTargetLines()[index].MoveTo(_direction, inStepLength, inStepDuration, () =>
+                {
+                    //next line
+                    var next = NextLine(index);
+                    MoveTargetLines(next, inStepLength, inStepDuration);
+                });
+            }
+    
+            private int GetStartIndex()
+            {
+                if (_direction == Direction.Up) return 0;
+                return GetTargetLines().Length - 1;
+            }
+            
+            private int NextLine(int index)
+            {
+                if (_direction == Direction.Up) index++;
+                else index--;
+                return index;
+            }
+            
+            private bool IsLineCompleted(int index)
+            {
+                if (_direction == Direction.Up) return index >= GetTargetLines().Length;
+                else return index < 0;
+            }
         
-        private int NextLine(int index)
-        {
-            if (_direction == Direction.Up) index++;
-            else index--;
-            return index;
-        }
-        
-        private bool IsLineCompleted(int index)
-        {
-            if (_direction == Direction.Up) return index >= GetTargetLines().Length;
-            else return index < 0;
-        }
+        #endregion
     }
 }

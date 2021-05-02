@@ -1,9 +1,9 @@
 ﻿namespace Core
 {
-    public enum GameStates
+    public enum States
     {
         Menu,
-        Leaderboards,
+        LeaderBoards,
         Game,
         Pause
     }

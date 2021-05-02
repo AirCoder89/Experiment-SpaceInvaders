@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 696c02d64d564099bcd769d8546a9b56, type: 3}
+  m_Name: Audio Config
+  m_EditorClassIdentifier: 
+  masterVolume: 0.264
+  bufferSize: 8
+  audios:
+  - label: 4
+    clip: {fileID: 8300000, guid: b949dee3f61859e439f2cd120c934c9d, type: 3}
+    volume: 0.6
+    pitch: 1
+    loop: 0
+    singleSource: 0
+  - label: 2
+    clip: {fileID: 8300000, guid: c68a7b122da40f94bae55e024b3374c6, type: 3}
+    volume: 0.6
+    pitch: 1
+    loop: 0
+    singleSource: 1
+  - label: 1
+    clip: {fileID: 8300000, guid: 2cc5eecd860de354d8b323636e9bc82f, type: 3}
+    volume: 0.6
+    pitch: 1
+    loop: 0
+    singleSource: 1
+  - label: 0
+    clip: {fileID: 8300000, guid: 753cec970a4905a4b8cbefb7cf927a5b, type: 3}
+    volume: 0.6
+    pitch: 1
+    loop: 0
+    singleSource: 1
+  - label: 5
+    clip: {fileID: 8300000, guid: fbbb6ad157e177f439453223bc198ded, type: 3}
+    volume: 0.25
+    pitch: 1
+    loop: 1
+    singleSource: 1
+  - label: 6
+    clip: {fileID: 8300000, guid: a9ff361c05c9a4040aa4f1a5feb5d08c, type: 3}
+    volume: 0.35
+    pitch: 1
+    loop: 0
+    singleSource: 1
+  - label: 3
+    clip: {fileID: 8300000, guid: f2cfc748e1072d7429a60bfb68cc37da, type: 3}
+    volume: 0.6
+    pitch: 1
+    loop: 0
+    singleSource: 1
+  - label: 9
+    clip: {fileID: 8300000, guid: 644518f594121244fa3c23549dfe7339, type: 3}
+    volume: 0.6
+    pitch: 1
+    loop: 0
+    singleSource: 1

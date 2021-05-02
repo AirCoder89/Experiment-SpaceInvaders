@@ -11,9 +11,9 @@ namespace Views
     {
         public event Action<Type, GameView> onDspawn;
         
-        private Vector3        _direction;
-        private BulletData     _data;
-        private bool           _canMove;
+        private readonly BulletData     _data;
+        private Vector3                 _direction;
+        private bool                    _canMove;
         
         public BulletView(string inName, BulletData inData, Transform inHolder) : base(inName)
         {
@@ -38,12 +38,13 @@ namespace Views
         {
             Despawn();
             var view = ObjectMap.GetView(inOther.GetInstanceID());
-            if(view == null) return;
-            if(view is IDestructible destructible) destructible.TakeDamage();
+            if (view == null) return;
+            if (view is IDestructible destructible) destructible.TakeDamage();
         }
 
-        public void Launch(Vector3 inPosition, Vector3 inDirection, LayerMask inLayerMask)
+        public void Launch(Vector3 inPosition, Vector3 inDirection, LayerMask inLayerMask, string by)
         {
+            gameObject.name = $"Used By [{by}]";
             GetComponent<HitDetector>().UpdateLayerMask(inLayerMask);
             GetComponent<HitDetector>().Enabled = true;
             Visibility = true;

@@ -2,6 +2,7 @@
 using Core;
 using Interfaces;
 using Models;
+using Models.Audio;
 using Models.SystemConfigs;
 using UnityEngine;
 using Utils;
@@ -21,7 +22,7 @@ namespace Systems
             if(inConfig != null) _config = inConfig as AudioConfig;
 
             var sourcesHolder = new GameObject("AudioSources Holder");
-            sourcesHolder.transform.SetParent(LevelState.Instance.transform);
+            sourcesHolder.transform.SetParent(GameState.GameHolder);
             sourcesHolder.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
             
             //- fill the audio pool
@@ -58,6 +59,20 @@ namespace Systems
             if(!IsRun) return;
             foreach (var data in _audioMap)
                 data.Value.Tick();
+        }
+
+        public override void Pause()
+        {
+            base.Pause();
+            foreach (var data in _audioMap)
+                data.Value.Pause();
+        }
+
+        public override void Resume()
+        {
+            base.Resume();
+            foreach (var data in _audioMap)
+                data.Value.Resume();
         }
     }
 }

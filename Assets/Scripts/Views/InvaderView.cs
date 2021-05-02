@@ -1,9 +1,11 @@
 ﻿using System;
 using Systems;
+using AirCoder.TJ.Core;
 using AirCoder.TJ.Core.Extensions;
 using Core;
 using Interfaces;
 using Models;
+using Models.Animations;
 using Models.Grid;
 using Models.SystemConfigs;
 using UnityEngine;
@@ -14,9 +16,9 @@ namespace Views
 {
     public class InvaderView : Cell, IDestructible
     {
-        public static event Action<GameView> OnDestroyed;
-        public bool                   IsAlive { get; private set; }
-        public int Health
+        public static event Action<InvaderView> OnDestroyed;
+        public bool IsAlive { get; private set; }
+        public int  Health
         {
             get => _health;
             private set
@@ -25,7 +27,6 @@ namespace Views
                 IsAlive = _health > 0;
                 if (IsAlive) return;
                     OnDestroyed?.Invoke(this);
-                   Kill();
             }
         }
 
@@ -33,15 +34,13 @@ namespace Views
             => _shoot ?? (_shoot = Main.GetSystem<ShootingSystem>());
         
         private ShootingSystem  _shoot;
-        private readonly int    _startHealth;
         private GridConfig      _gridConfig;
         private int             _health;
         
         public InvaderView(string inName, CellData inData, GridConfig inConfig)  
-            : base(inName, inData.position, inData, inData.meshes[0], inConfig.establishing.material)
+            : base(inName, inData, inConfig.establishing.material)
         {
-            _startHealth = Health = 1; //one hit
-            
+            Health = inData.health;
             _gridConfig = inConfig;
             UpdatePosition();
              GetComponent<MeshRenderer>().material.color = inData.color;
@@ -55,16 +54,19 @@ namespace Views
         public override void BindData(CellData inData)
         {
             base.BindData(inData);
+            Health = inData.health; 
+            Visibility = true;
             UpdatePosition();
             GetComponent<MeshRenderer>().material.color = inData.color;
+            SetScale(Vector3.zero);
         }
        
         public void UpdateMeshByIndex(int index)
         {
             UpdateMesh(Data.meshes[index]);
         }
-        
-        public void UpdatePosition()
+
+        private void UpdatePosition()
             => gameObject.transform.position = LocationToPosition(Location);
         
         private Vector3 LocationToPosition(Vector2Int inLocation)
@@ -86,11 +88,12 @@ namespace Views
             Health--;
         }
 
-        public void Kill()
+        public int Kill()
         {
             IsAlive = false;
             _health = 0;
             PlayKillAnimation();
+            return Data.value;
         }
 
         private void PlayKillAnimation()
@@ -111,25 +114,9 @@ namespace Views
                 .Play();
         }
 
-        public void Revive()
-        {
-            Health = _startHealth;
-            Visibility = true;
-        }
-
-        public void Select()
-        {
-            GetComponent<MeshRenderer>().material.color = Color.magenta;
-        }
-
-        public void UnSelect()
-        {
-            GetComponent<MeshRenderer>().material.color = Data.color;
-        }
-
         public void Shoot(LayerMask inLayerMask)
         {
-            _shootingSystem.Shoot(Position, Vector3.down, inLayerMask);
+            _shootingSystem.Shoot(Position, Vector3.down, inLayerMask, "Invader");
         }
     }
 }

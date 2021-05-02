@@ -21,6 +21,7 @@ MonoBehaviour:
     cellSize: {x: 1.2, y: 1}
     material: {fileID: 2100000, guid: c682f4dcc90b8c941a010deec2f2d7aa, type: 2}
   animation:
+    basedLine: 1
     openingAnimation:
       direction: 1
       axis: 1
@@ -35,16 +36,19 @@ MonoBehaviour:
     invaders:
     - label: 0
       value: 10
+      health: 1
       meshes:
       - {fileID: -4664382578460312087, guid: a05aca68d768c924c955e75128fb6ec3, type: 3}
       - {fileID: -4664382578460312087, guid: 7dac841c516828d4d9c5c4f06a0a8b27, type: 3}
     - label: 1
       value: 20
+      health: 1
       meshes:
       - {fileID: -4664382578460312087, guid: 4ce1456df5a897b4d98788741fb23872, type: 3}
       - {fileID: -4664382578460312087, guid: 752b240064f120942b9ebe8fc9f7f5e6, type: 3}
     - label: 2
       value: 30
+      health: 1
       meshes:
       - {fileID: -4664382578460312087, guid: cd7e2ec4eceee0f438c6f47352c5ad9b, type: 3}
       - {fileID: -4664382578460312087, guid: be016d7846a6a1c419c4870568eaab61, type: 3}

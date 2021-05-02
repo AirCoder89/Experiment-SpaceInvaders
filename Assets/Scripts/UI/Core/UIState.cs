@@ -10,40 +10,38 @@ namespace UI.Core
     [RequireComponent(typeof(CanvasGroup))]
     public class UIState : MonoBehaviour, IGameState
     {
-        [SerializeField] private GameStates label;
-        private Canvas _canvas
+        [SerializeField] private States label;
+        private Canvas _rootCanvas
         {
             get
             {
-                if (_c == null) _c = GetComponent<Canvas>();
-                return _c;
+                if (_canvas == null) _canvas = GetComponent<Canvas>();
+                return _canvas;
             }
         }
-
-        private CanvasGroup _canvasGroup
+        public CanvasGroup _canvasGroup
         {
             get
             {
-                if (_cg == null) _cg = GetComponent<CanvasGroup>();
-                return _cg;
+                if (_cGroup == null) _cGroup = GetComponent<CanvasGroup>();
+                return _cGroup;
             }
         }
-
-        public GameStates Label => label;
+        public States Label => label;
         
         public bool Visibility
         {
             get => _isVisible;
-            set
+            private set
             {
                 _isVisible = value;
-                _canvas.enabled = _isVisible;
+                _rootCanvas.enabled = _isVisible;
             }
         }
-        
-        private CanvasGroup  _cg;
+
         private bool         _isVisible;
-        private Canvas       _c;
+        private Canvas       _canvas;
+        private CanvasGroup  _cGroup;
         private UIManager    _manager;
         private bool         _isInitialized;
         
@@ -52,43 +50,35 @@ namespace UI.Core
             if(_isInitialized) return;
             _isInitialized = true;
             _manager = inManager;
-            Main.RegisterGameState(this);
-            CloseImmediately();
+            StateManager.RegisterGameState(this);
+            Visibility = false;
         }
 
-        public void Open(float inDuration, Action inCallback)
+        public virtual void Enter()
         {
             Visibility = true;
-            _canvasGroup.alpha = 0f;
-            _canvasGroup.TweenOpacity(1f, inDuration)
-                .OnComplete(inCallback)
-                .Play();
         }
 
-        public void OpenImmediately()
+        public virtual void Tick(float inDeltaTime)
         {
-            Visibility = true;
-            _canvasGroup.alpha = 1f;
+            
         }
 
-        public void Close(float inDuration, Action inCallback)
-        {
-            Visibility = true;
-            _canvasGroup.alpha = 1f;
-            _canvasGroup
-                .TweenOpacity(0f, inDuration)
-                .OnComplete(() =>
-                {
-                    Visibility = false;
-                    inCallback?.Invoke();
-                })
-                .Play();
-        }
-
-        public void CloseImmediately()
+        public virtual void Exit()
         {
             Visibility = false;
+        }
+
+        public void FadeIn(Action inCallback = null)
+        {
             _canvasGroup.alpha = 0f;
+            _canvasGroup.TweenOpacity(1f, _manager.fadeTransitionDuration).OnComplete(inCallback).Play();
+        }
+        
+        public void FadeOut(Action inCallback = null)
+        {
+            _canvasGroup.alpha = 1f;
+            _canvasGroup.TweenOpacity(0f, _manager.fadeTransitionDuration).OnComplete(inCallback).Play();
         }
     }
 }

@@ -47,6 +47,12 @@ namespace Views
             }
         }
 
+        public void Reset()
+        {
+            foreach (var piece in _pieces)
+                piece.Value.Reset();
+        }
+        
         public float GetWidth()
         {
             return (_config.pieceData.pieceScale.x + _config.pieceData.spacing) * 5;
@@ -61,6 +67,5 @@ namespace Views
             var position = new Vector3(_config.pieceData.pieceScale.x * inLocation.y, -_config.pieceData.pieceScale.y * inLocation.x, 0f);
             return position + spacing;
         }
-       
     }
 }

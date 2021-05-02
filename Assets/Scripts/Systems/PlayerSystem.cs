@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System;
+using Core;
 using Interfaces;
 using Models.SystemConfigs;
 using UnityEngine;
@@ -14,16 +15,24 @@ namespace Systems
         
         private readonly PlayerConfig   _config;
         private readonly PlayerView     _playerView;
-        private readonly Timer          _fireRateTimer;
         private InputsSystem            _input;
         private bool                    _canShoot;
+        private float                   _fireRateCounter;
         
         public PlayerSystem(SystemConfig inConfig) : base(inConfig)
         {
             if(inConfig != null) _config = inConfig as PlayerConfig;
             _playerView = new PlayerView("Player", _config);
-            _playerView.SetParent(LevelState.Instance.transform);
-            _fireRateTimer = new Timer(_config.fireRate, () => _canShoot = true);
+            _playerView.SetParent(GameState.GameHolder);
+            _fireRateCounter = 0;
+            _canShoot = true;
+        }
+        
+        public void Reset()
+        {
+            _playerView.Reset();
+            _fireRateCounter = 0;
+            _canShoot = true;
         }
         
         public override void Start()
@@ -34,16 +43,27 @@ namespace Systems
         public void Tick(float inDeltaTime)
         {
             if(!IsRun) return;
+            
+            EvaluateFireRate(inDeltaTime);
+            
             var horizontal = Input.GetAxis("Horizontal");
             _playerView.Move(horizontal, inDeltaTime);
             if(Input.GetKeyDown(KeyCode.Space)) Shoot();
         }
 
+        private void EvaluateFireRate(float inDeltaTime)
+        {
+            if(_canShoot) return;
+            _fireRateCounter += inDeltaTime;
+            if (!(_fireRateCounter >= _config.fireRate)) return;
+                _fireRateCounter = 0f;
+                _canShoot = true;
+        }
+
         private void Shoot()
         {
-            if(!_canShoot) return;
+            if (!_canShoot) return;
             _canShoot = false;
-            _fireRateTimer.Start();
             _playerView.Shoot();
         }
     }

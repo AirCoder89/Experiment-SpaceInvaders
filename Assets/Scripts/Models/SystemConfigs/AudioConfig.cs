@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core;
+using Models.Audio;
 using UnityEngine;
 
 namespace Models.SystemConfigs
@@ -7,10 +8,15 @@ namespace Models.SystemConfigs
     public enum AudioLabel
     {
         InvadersMove, 
-        HitShield, 
+        GameOver, 
         HitInvaders, 
         HitPlayer,
-        Shoot
+        Shoot,
+        SpecialMove,
+        SpecialDie,
+        LevelWin,
+        NewGame,
+        Click
     }
     
     [CreateAssetMenu(menuName = "Game/System Config/Audio System Config")]

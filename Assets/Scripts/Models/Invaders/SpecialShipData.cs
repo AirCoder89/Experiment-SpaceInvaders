@@ -1,4 +1,5 @@
 ﻿using System;
+using Models.Animations;
 using UnityEngine;
 
 namespace Models.Invaders
@@ -6,11 +7,17 @@ namespace Models.Invaders
     [Serializable]
     public class SpecialShipData
     {
+        public int      value;
+        public int      health;
         public Mesh     mesh;
         public Color    color;
         public Vector3  startPos;
         public Vector3  targetPos;
-        public float    speed;
-        public float    appearanceRate;
+
+        public float speed;
+        public AnimationCurve moveEase;
+        public float     duration;
+        public float     appearanceRate;
+        public TweenData killAnimation;
     }
 }

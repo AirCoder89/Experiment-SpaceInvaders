@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 
 namespace Models.Invaders
 {
-   
     [Serializable]
     public struct InvaderCatalog
     {
@@ -39,7 +38,8 @@ namespace Models.Invaders
             {
                 meshes = data.meshes,
                 value = data.value,
-                color = GetRandomColor()
+                color = GetRandomColor(),
+                health = data.health
             };
         }
 

@@ -15,7 +15,8 @@ namespace Models.Invaders
     public struct InvaderDataSet
     {
         public InvadersLabel label;
-        public int           value; 
+        public int           value;
+        public int           health;
         public Mesh[]        meshes;
     }
 }

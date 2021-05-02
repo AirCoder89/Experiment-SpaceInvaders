@@ -4,7 +4,11 @@ namespace Interfaces
 {
     public interface IGameState
     {
-        GameStates Label { get; }
-        bool Visibility { get; set; }
+        States Label { get; }
+        bool Visibility { get; }
+        
+        void Enter();
+        void Tick(float inDeltaTime);
+        void Exit();
     }
 }

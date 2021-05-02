@@ -14,7 +14,6 @@ namespace Interfaces
         int Health { get; }
 
         void TakeDamage();
-        void Kill();
-        void Revive();
+        int Kill();
     }
 }

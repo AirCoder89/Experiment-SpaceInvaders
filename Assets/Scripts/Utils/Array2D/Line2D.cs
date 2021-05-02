@@ -1,6 +1,7 @@
 using System;
 using AirCoder.TJ.Core;
 using AirCoder.TJ.Core.Extensions;
+using Core;
 using Interfaces;
 using UnityEngine;
 
@@ -22,15 +23,15 @@ namespace Utils.Array2D
         }
         
         private readonly T[] _values;
-        private bool         _visibility;
-        private int          _index;
+        private Direction    _direction;
+        private Vector3      _targetPos;
+        private Action       _moveCallback;
         private float        _counter;
         private float        _stepLength;
         private float        _stepDuration;
+        private bool         _visibility;
         private bool         _canMove;
-        private Vector3      _targetPos;
-        private Direction    _direction;
-        private Action       _moveCallback;
+        private int          _index;
         
         public T this[int i]
         {
@@ -41,6 +42,7 @@ namespace Utils.Array2D
         public Line2D(int inSize) 
         {
             _values = new T[inSize];
+            GameState.OnResetGame += ResetAnimation;
         }
 
         public T GetFirstAlive()
@@ -77,28 +79,27 @@ namespace Utils.Array2D
             AssignTargetPosition(_values[_index]);
         }
 
+        private void ResetAnimation()
+        {
+            _canMove = false;
+            _counter = 0f;
+            _index = 0;
+            _moveCallback = null;
+        }
+
         private void AssignTargetPosition(Cell inCell)
         {
             switch (_direction)
             {
                 case Direction.Right:
-                    _targetPos = new Vector3(inCell.Position.x + _stepLength, inCell.Position.y, 0f);
-                    break;
+                    _targetPos = new Vector3(inCell.Position.x + _stepLength, inCell.Position.y, 0f);   break;
                 case Direction.Left:
-                    _targetPos = new Vector3(inCell.Position.x - _stepLength, inCell.Position.y, 0f);
-                    break;
+                    _targetPos = new Vector3(inCell.Position.x - _stepLength, inCell.Position.y, 0f);   break;
                 case Direction.Up:
-                    _targetPos = new Vector3(inCell.Position.x, inCell.Position.y  + _stepLength, 0f);
-                    break;
+                    _targetPos = new Vector3(inCell.Position.x, inCell.Position.y  + _stepLength, 0f);  break;
                 case Direction.Down:
-                    _targetPos = new Vector3(inCell.Position.x, inCell.Position.y  - _stepLength, 0f);
-                    break;
+                    _targetPos = new Vector3(inCell.Position.x, inCell.Position.y  - _stepLength, 0f);  break;
             }
-        }
-
-        private Vector3 InterpolatePosition(Vector3 startPos, Vector3 targetPos, float inTime)
-        {
-            return startPos + (targetPos - startPos) * inTime;
         }
         
         public void Tick(float inDeltaTime)
@@ -114,9 +115,14 @@ namespace Utils.Array2D
             //create cycle
             _counter += inDeltaTime;
             var step = _counter / _stepDuration;
-            
+
             if (step >= 1f) NextCell();
-            else  _values[_index].SetPosition(InterpolatePosition(_values[_index].Position, _targetPos, step));
+            else InterpolatePosition(_targetPos, step);
+        }
+
+        private void InterpolatePosition(Vector3 inTarget, float inTime)
+        {
+            _values[_index].transform.localPosition = Vector3.Lerp(_values[_index].transform.localPosition, inTarget, inTime);
         }
 
         private void AssignStartIndex()

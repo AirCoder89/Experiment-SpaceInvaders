@@ -1,16 +1,11 @@
-﻿
-using System;
-using Core;
+﻿using Models.SystemConfigs;
 using Interfaces;
-using Models.SystemConfigs;
-using UnityEngine;
 using Utils;
 
 namespace Views
 {
     public class ShieldPiece : GameView3D, IDestructible
     {
-        public event Action<GameView> onDestroyed;
         public bool                   IsAlive { get; private set; }
         public int Health
         {
@@ -21,16 +16,16 @@ namespace Views
                 IsAlive = _health > 0;
                 if (IsAlive) return;
                     Kill();
-                
             }
         }
         
         private readonly int  _startHealth;
         private int           _health;
         
-        public ShieldPiece(string inName, ShieldConfig inConfig)  : base(inName, inConfig.pieceData.meshPiece, LayersList.Shields)
+        public ShieldPiece(string inName, ShieldConfig inConfig)  : base(inName, inConfig.pieceData.meshPiece)
         {
             _startHealth = Health = inConfig.pieceData.shieldHealth;
+            layerMask = LayersList.Shields;
         }
         
         public void TakeDamage()
@@ -39,18 +34,17 @@ namespace Views
             Health--;
         }
 
-        public void Kill()
+        public int Kill()
         {
-            onDestroyed?.Invoke(this);
             Visibility = false;
+            return 0;
             //Todo: add sfx
         }
 
-        public void Revive()
+        public void Reset()
         {
             Health = _startHealth;
             Visibility = true;
         }
     }
-
 }

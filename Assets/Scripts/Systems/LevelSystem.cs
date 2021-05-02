@@ -17,10 +17,8 @@ namespace Systems
         {
             if(inConfig != null) _config = inConfig as LevelConfig;
 
-            var levelState = new LevelState("[ Level State ]", GameStates.Game);
-            
             _holder = new GameObject("Edges").transform;
-            _holder.SetParent(levelState.transform);
+            _holder.SetParent(GameState.GameHolder);
             _holder.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         }
         

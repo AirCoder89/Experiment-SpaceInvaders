@@ -1,28 +1,31 @@
-﻿
-using System;
-using System.Collections.Generic;
-using Systems;
-using AirCoder.NaughtyAttributes.Scripts.Core.DrawerAttributes;
+﻿using System;
 using AirCoder.NaughtyAttributes.Scripts.Core.DrawerAttributes_SpecialCase;
-using AirCoder.NaughtyAttributes.Scripts.Core.MetaAttributes;
 using AirCoder.NaughtyAttributes.Scripts.Core.ValidatorAttributes;
-using Interfaces;
-using UI.Core;
+using AirCoder.NaughtyAttributes.Scripts.Core.DrawerAttributes;
+using AirCoder.NaughtyAttributes.Scripts.Core.MetaAttributes;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Utils.Array2D;
-using Views;
-using Vector2Int = Utils.Array2D.Vector2Int;
+using Systems;
+using Models;
+using Models.SystemConfigs;
+using UI.Core;
 
 namespace Core
 {
+    public enum GameLoop
+    {
+        None, Update, Coroutine
+    }
     public class Main : MonoBehaviour
     {
-        public static event Action OnLevelWin;
-        
         [Required] [SerializeField] private UIManager uiManager;
         
         public static GameSettings Settings => _instance.settings;
-        [BoxGroup("Settings")][Required][SerializeField][Expandable] private GameSettings settings;
+        //public static GameData Data => _instance.gameData;
+        
+        [BoxGroup("Setup")][Required][SerializeField][Expandable] private GameSettings settings;
+        [BoxGroup("Setup")][Required][SerializeField] private GameData                 gameData;
 
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig levelConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig playerConfig;
@@ -33,34 +36,34 @@ namespace Core
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig animationConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig audioConfig;
 
-        private Dictionary<GameStates, IGameState> _gameStates;
-        private GameController   _controller;
-        private IGameState       _activeState;
         private static Main      _instance;
+        private GameState        _gameState;
         private bool             _isRun;
+        private bool             _isFirstRun;
         private void Awake()
-        {
-            if (_instance != null)  return;
-            _instance = this;
-        }
-        
-        private void Start()
         {
             // --------------------------------------------------------------------------------
             // Game Entry Point
             // --------------------------------------------------------------------------------
+            if (_instance != null)  return;
+            _instance = this;
+            _isFirstRun = true;
+        }
+
+        private void Start()
+        {
+            // --------------------------------------------------------------------------------
+            // Initializing & Establishing
+            // --------------------------------------------------------------------------------
             ApplyGameSettings();
+            gameData.Initialize(((PlayerConfig)playerConfig).lives );
+            gameData.ResetData();
             Initialize();
+            StateManager.UpdateGameState(Settings.startState);
 
-            //- we make a check if level is completed or not after invader getting destroyed!
-            InvaderView.OnDestroyed += view =>
-            {
-                if (!GetSystem<GridSystem>().IsLevelWin()) return;
-                LevelWin();
-            };
-
-            ShowGameState(Settings.startState);
-            StartGame();
+            //- subscribe to events
+            GameState.OnGameOver += OnGameOver;
+            GameState.OnLevelWin += OnLevelWin;
         }
 
         private void ApplyGameSettings()
@@ -69,7 +72,7 @@ namespace Core
             // Setup game settings
             // --------------------------------------------------------------------------------
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-            UnityEngine.Application.targetFrameRate = Settings.targetFrameRate;
+            Application.targetFrameRate = Settings.targetFrameRate;
             Cursor.visible = Settings.cursorVisibility;
             
             //keep frame rate & monitor refresh rate in sync
@@ -81,12 +84,16 @@ namespace Core
         
         private void Initialize()
         {
+            // --------------------------------------------------------------------------------
+            // Initialize the User Interfaces
+            // --------------------------------------------------------------------------------
             uiManager.Initialize();
+            
             // --------------------------------------------------------------------------------
-            // Create the GameController then add the necessary systems (the order is matter !)
+            // Create the Game State then add the necessary systems (the order is matter !)
             // --------------------------------------------------------------------------------
-            _controller = new GameController();
-            _controller
+            _gameState = new GameState(States.Game, gameData);
+            _gameState
                 .AddSystem(new TimingSystem())
                 .AddSystem(new LevelSystem(levelConfig))
                 .AddSystem(new AudioSystem(audioConfig))
@@ -97,81 +104,151 @@ namespace Core
                 .AddSystem(new AnimationSystem(animationConfig))
                 .AddSystem(new ShootingSystem(shootingConfig));
         }
+        
+        public static T GetSystem<T>() where T : GameSystem
+            => _instance._gameState.GetSystem<T>();
 
-        private void LevelWin()
-        {
-            Debug.Log($"LEVEL WIN !");
-        }
-
-        public static void RegisterGameState(IGameState inGameSate)
-        {
-            if (_instance._gameStates == null) _instance._gameStates = new Dictionary<GameStates, IGameState>();
-            if (_instance._gameStates.ContainsKey(inGameSate.Label))
-            {
-                Debug.LogWarning($"Cannot register duplicated Game State!");
-                return;
-            }
-            _instance._gameStates.Add(inGameSate.Label, inGameSate);
-        }
-
-        public GameStates targetState;
+        public States targetState;
 
         [Button]
         private void SetState()
         {
-            ShowGameState(targetState);
+            StateManager.UpdateGameState(targetState);
         }
         
-        public void ShowGameState(GameStates inState)
+        private void OnLevelWin(int inScore)
         {
-            if (!_gameStates.ContainsKey(inState))
-                throw new Exception($"Game State [{inState}] not found !");
-
-            if (_activeState != null)
-            {
-                if (_activeState == _gameStates[inState]) return;
-                _activeState.Visibility = false;
-            }
-
-            _activeState = _gameStates[inState];
-            _activeState.Visibility = true;
+            AudioSystem.Play(AudioLabel.LevelWin);
+            Debug.Log($"Level Win . your score {inScore}");
+            //Todo: add bonus & Check score if more than lowest score in the leader board
+            StateManager.UpdateGameState(States.Menu);
         }
-        
-        
-        public static T GetSystem<T>() where T : GameSystem
-        => _instance._controller.GetSystem<T>();
 
-        [Button("Start Game")]
-        private void StartGame()
+        private void OnGameOver()
+        {
+            AudioSystem.Play(AudioLabel.GameOver);
+            StateManager.UpdateGameState(States.Menu);
+        }
+
+        private void FirstStart()
         {
             _isRun = true;
-            _controller.Start();
+            _gameState.Start();
+            if(Settings.gameLoop == GameLoop.Coroutine) 
+                StartCoroutine(Tick());
         }
         
-        [Button("Pause App")]
-        private void PauseGame()
+        [Button("New Game")]
+        private void NewGame()
+        {
+            _isRun = true;
+            _gameState.NewGame();
+        }
+        
+        [Button]
+        private void Pause()
         {
             _isRun = false;
-            _controller.Pause();
+            if(Settings.gameLoop == GameLoop.Coroutine) 
+                StopCoroutine(Tick());
+            _gameState.Pause();
         }
         
-        [Button("Resume App")]
-        private void ResumeGame()
+        [Button]
+        private void Resume()
         {
             _isRun = true;
-            _controller.Resume();
+            if (Settings.gameLoop == GameLoop.Coroutine)
+                StartCoroutine(Tick());
+            _gameState.Resume();
         }
+        
+        
+        private readonly Dictionary<float, WaitForSeconds>  _waitDictionary = new Dictionary<float, WaitForSeconds>();
+        private static Dictionary<string, IEnumerator>      _coroutinesMap = new Dictionary<string, IEnumerator>();
+        
+        /// <summary>
+        /// None-allocating WaitForSeconds
+        /// </summary>
+        private WaitForSeconds GetWait(float inTime)
+        {
+            if (_waitDictionary.TryGetValue(inTime, out var wait)) return wait;
+            _waitDictionary[inTime] = new WaitForSeconds(inTime);
+            return _waitDictionary[inTime];
+        }
+
+        
+        public static string LateExecute(Action inAction, float inTime)
+        {
+            var operationId = Guid.NewGuid().ToString("N"); //generate unique identifier
+            var coroutine = _instance.WaitAndExecute(inAction, inTime, operationId);
+            _coroutinesMap.Add(operationId, coroutine);
+            _instance.StartCoroutine(coroutine);
+            return operationId;
+        }
+
+        public static string ExecuteCoroutine(IEnumerator inCoroutine)
+        {
+            var operationId = Guid.NewGuid().ToString("N"); //generate unique identifier
+            _coroutinesMap.Add(operationId, inCoroutine);
+            _instance.StartCoroutine(inCoroutine);
+            return operationId;
+        }
+
+        public static bool CancelExecution(string inOperationId)
+        {
+            if (string.IsNullOrEmpty(inOperationId) || !_coroutinesMap.ContainsKey(inOperationId)) return false;
+            _instance.StopCoroutine(_coroutinesMap[inOperationId]);
+            return true;
+        }
+
+        private IEnumerator WaitAndExecute(Action inAction, float inTime, string inOperationId)
+        {
+            yield return GetWait(inTime);
+            inAction?.Invoke();
+            _coroutinesMap.Remove(inOperationId);
+        }
+        
         
         private void Update()
         {
-            if(!_isRun) return;
-            _controller.Tick(Time.deltaTime);
+            if(!_isRun || Settings.gameLoop != GameLoop.Update) return;
+            StateManager.Tick(Time.deltaTime);
         }
 
-        private void FixedUpdate()
+        private IEnumerator Tick()
         {
-            if(!_isRun) return;
-            _controller.FixedTick(Time.fixedDeltaTime);
+            while (_isRun)
+            {
+                StateManager.Tick(Time.deltaTime);
+                yield return null;
+            }
+        }
+
+        public static void StartNewGame()
+        {
+            AudioSystem.Play(AudioLabel.NewGame);
+            StateManager.UpdateGameState(States.Game);
+            if (_instance._isFirstRun)
+            {
+                _instance.FirstStart();
+                _instance._isFirstRun = false;
+                return;
+            }
+            _instance._isRun = true;
+            _instance._gameState.NewGame();
+        }
+
+        public static void PauseGame()
+        {
+            _instance.Pause();
+            StateManager.UpdateGameState(States.Pause);
+        }
+        
+        public static void ResumeGame()
+        {
+            _instance.Resume();
+            StateManager.UpdateGameState(States.Game);
         }
     }
 }

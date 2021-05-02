@@ -23,14 +23,40 @@ MonoBehaviour:
       m_Bits: 2816
     shootingRate: 1
   specialShip:
+    value: 50
+    health: 1
     mesh: {fileID: -4664382578460312087, guid: 44bdfcf9ff275ee4d856afa407faf083, type: 3}
     color: {r: 0.16862746, g: 0.8117648, b: 0.6156863, a: 1}
     startPos: {x: -12, y: 6.2, z: 0}
     targetPos: {x: 12, y: 6.2, z: 0}
-    speed: 20
+    speed: 1.2
+    moveEase:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    duration: 10
     appearanceRate: 2
-  specialShipMesh: {fileID: -4664382578460312087, guid: 44bdfcf9ff275ee4d856afa407faf083, type: 3}
-  specialShipStartPos: {x: -12, y: 6.2, z: 0}
-  specialShipTargetPos: {x: 12, y: 6.2, z: 0}
-  specialShipSpeed: 20
-  specialShipAppearanceRate: 2
+    killAnimation:
+      target: {x: 0, y: 180, z: 0}
+      duration: 1
+      ease: 39

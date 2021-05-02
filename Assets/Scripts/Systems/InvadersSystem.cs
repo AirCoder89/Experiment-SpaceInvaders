@@ -1,72 +1,95 @@
-﻿using Core;
+﻿using System;
+using Core;
 using Interfaces;
 using Models.SystemConfigs;
-using UnityEngine;
 using Utils;
 using Utils.Array2D;
 using Views;
+using Random = UnityEngine.Random;
 
 namespace Systems
 {
     public class InvadersSystem : GameSystem, ITick
     {
+        public static event Action<int> OnCollectScore; 
         private GridSystem _gridSystem 
             => _grid ?? (_grid = Main.GetSystem<GridSystem>());
 
-        private readonly Timer _shootingTimer;
-        private GridSystem     _grid;
-        private InvadersConfig _config;
-        private Direction      _currentDirection;
-        private float          _timeCounter;
-        private bool           _canMove;
-        private bool           _hasToReverse;
-        private bool           _moveSpecialShip;
-        private float          _specialShipCounter;
-        private GameView3D     _specialShip;
+        private readonly InvadersConfig _config;
+        private readonly SpecialShip    _specialShip;
+        private readonly Timer          _shootingTimer;
+        private GridSystem              _grid;
+        private Direction               _currentDirection;
+        private float                   _timeCounter;
+        private bool                    _canMove;
+        private bool                    _hasToReverse;
         
         public InvadersSystem(SystemConfig inConfig = null) : base(inConfig)
         {
             if(inConfig != null) _config = inConfig as InvadersConfig;
-            _shootingTimer = new Timer(_config.behaviours.shootingRate, Shoot);
-            InvaderView.OnDestroyed += view =>
-            {
-                AudioSystem.Play(AudioLabel.HitInvaders);
-                DestroyInvaderMatches(view);
-            };
+            if(inConfig == null) GameExceptions.NullReference($"InvadersConfig must be not null!");
             
+            _shootingTimer = new Timer(_config.behaviours.shootingRate, Shoot);
+            
+            InvaderView.OnDestroyed += OnDestroyInvader;
             LevelSystem.OnHitVerticalEdges += () => _hasToReverse = true;
-            CreateSpecialShip();
+            
+            //- create special ship
+            _specialShip = new SpecialShip("SpecialShip", _config.specialShip);
+            _specialShip.SetParent(GameState.GameHolder);
+        }
+        
+        public Action Reset()
+        {
+            _shootingTimer.Stop();
+            _hasToReverse = false;
+            _canMove = false;
+            _currentDirection = Direction.Right;
+            _timeCounter = 0f;
+            _specialShip.Reset();
+
+            return OnResetComplete;
+        }
+
+        private void OnResetComplete()
+        {
+            _canMove = true;
+            _shootingTimer.Start();
         }
         
         public override void Start()
         {
             _currentDirection = Direction.Right;
             _timeCounter = 0f;
+            _specialShip.Reset();
             _canMove = true;
             _shootingTimer.Start();
         }
 
-        private void CreateSpecialShip()
+        private void OnDestroyInvader(InvaderView inTarget)
         {
-            _moveSpecialShip = false;
-            _specialShipCounter = 0f;
-            _specialShip = new GameView3D("SpecialShip", _config.specialShip.mesh, LayersList.Special);
-            _specialShip.SetPosition(_config.specialShip.startPos);
+            var hitScore = inTarget.Kill();
+            AudioSystem.Play(AudioLabel.HitInvaders);
+            hitScore += DestroyMatches(inTarget);
+            OnCollectScore?.Invoke(hitScore);
         }
-        
-        private void DestroyInvaderMatches(GameView inTarget)
+
+        private int DestroyMatches(InvaderView inTarget)
         {
-            if(!(inTarget is InvaderView invader)) return;
-                var matches = _gridSystem.GetMatches(invader.Location);
+            if(inTarget == null) return 0;
+                var matchesScore = 0;
+                var matches = _gridSystem.GetMatches(inTarget.Location);
                 foreach (var cell in matches)
                 {
                     if (cell is IDestructible destructible)
-                        destructible.Kill();
+                        matchesScore += destructible.Kill();
                 }
+                return matchesScore;
         }
 
         private void Shoot()
         {
+            if(!_gridSystem.IsReady) return;
             var randomColumn = Random.Range(0, _gridSystem.Matrix.Columns.Length);
             var lastInvader = _gridSystem.GetLastInvader(randomColumn);
             lastInvader?.Shoot(_config.behaviours.targetLayer);
@@ -80,39 +103,9 @@ namespace Systems
                 _timeCounter += inDeltaTime;
                 MoveInvadersLeftAndRight();
             }
-
-            SpecialShipHandler(inDeltaTime);
+            _specialShip.Tick(inDeltaTime);
         }
 
-        private void SpecialShipHandler(float inDeltaTime)
-        {
-            _specialShipCounter += inDeltaTime;
-            
-            if (!_moveSpecialShip)
-            { 
-                if (_specialShipCounter > _config.specialShip.appearanceRate)
-                {
-                    //Appearance time!
-                    _specialShip.SetPosition(_config.specialShip.startPos);
-                    _specialShipCounter = 0f;
-                    _moveSpecialShip = true;
-                }
-                return;
-            }
-
-            var step = _specialShipCounter / _config.specialShip.speed;
-            if (step > 1f)
-            {
-                //interpolation complete
-                _specialShipCounter = 0f;
-                _moveSpecialShip = false;
-            }
-            else _specialShip.SetPosition(InterpolatePosition(_specialShip.Position, _config.specialShip.targetPos, step));
-        }
-
-        private Vector3 InterpolatePosition(Vector3 inPosA, Vector3 inPosB, float inTime)
-            => inPosA + (inPosB - inPosA) * inTime;
-        
         private void MoveInvadersLeftAndRight()
         {
             var step = _timeCounter / _config.movement.stepDelay;

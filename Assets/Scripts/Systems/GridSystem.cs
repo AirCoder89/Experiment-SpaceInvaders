@@ -24,14 +24,34 @@ namespace Systems
         {
             if(inConfig != null) _config = inConfig as GridConfig;
             _gridHolder = new GameObject("Grid Holder").transform;
-            _gridHolder.SetParent(LevelState.Instance.transform);
+            _gridHolder.SetParent(GameState.GameHolder);
             _gridHolder.position = Vector3.zero;
+            IsReady = false;
         }
 
         public override void Start()
         {
             Generate();
             IsReady = false;
+            if(_config.animation.openingAnimation.axis == TweenAxis.Vertical) OpeningAnimation(_matrix.Columns);
+            else if(_config.animation.openingAnimation.axis == TweenAxis.Horizontal) OpeningAnimation(_matrix.Rows);
+        }
+
+        public void NotReady() => IsReady = false;
+        
+        public void Reset()
+        {
+            for (var y = 0; y < _config.establishing.dimension.y; y++)
+            {
+                var invadersData = _config.invaders.GetDataByInvaderIndex(y);
+                for (var x = 0; x < _config.establishing.dimension.x; x++)
+                {
+                    invadersData.color = _config.invaders.GetRandomColor();
+                    invadersData.position = new Vector2Int(y, x);
+                    var invaderView = _matrix[y, x] as InvaderView;
+                    invaderView?.BindData(invadersData);
+                }
+            }
             if(_config.animation.openingAnimation.axis == TweenAxis.Vertical) OpeningAnimation(_matrix.Columns);
             else if(_config.animation.openingAnimation.axis == TweenAxis.Horizontal) OpeningAnimation(_matrix.Rows);
         }
@@ -108,31 +128,8 @@ namespace Systems
             return lastAlive;
         }
 
-        //test
-        public void SelectMatches(Vector2Int inLocation)
-        {
-            var matches = _matrix.GetMatches(_matrix[inLocation]);
-            foreach (var match in matches)
-            {
-                var invader = match as InvaderView;
-                invader?.Select();
-            }
-        }
-        
         public List<Cell> GetMatches(Vector2Int inLocation)
             => _matrix.GetMatches(_matrix[inLocation]);
-
-        public void ResetAllCells()
-        {
-            for (var y = 0; y < _config.establishing.dimension.y; y++)
-            {
-                for (var x = 0; x < _config.establishing.dimension.x; x++)
-                {
-                    var cell = _matrix[y, x] as InvaderView;
-                    cell?.UnSelect();
-                }
-            }
-        }
 
         public void Tick(float inDeltaTime)
         {
@@ -142,7 +139,10 @@ namespace Systems
 
         public void MoveLine(Direction inDirection, float inStepLength, float inStepDuration, Action onComplete)
         {
-            _matrix.MoveLineTo(MatrixLine.Row, inDirection, inStepLength, inStepDuration, onComplete);
+            AudioSystem.Play(AudioLabel.InvadersMove);
+            _matrix.MoveLineTo(_config.animation.basedLine, inDirection, inStepLength, inStepDuration, onComplete);
         }
+
+        
     }
 }

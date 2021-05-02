@@ -15,7 +15,7 @@ namespace Systems
         {
             if(inConfig != null) _config = inConfig as ShieldConfig;
             _holder = new GameObject("Shields Holder").transform;
-            _holder.SetParent(LevelState.Instance.transform);
+            _holder.SetParent(GameState.GameHolder);
             _holder.position = Vector3.zero;
         }
         
@@ -30,6 +30,12 @@ namespace Systems
                 _shields[i].SetPosition(pos);
                 pos = new Vector3(pos.x + _shields[i].GetWidth() + _config.shieldData.shieldSpacing, pos.y, 0f);
             }
+        }
+
+        public void Reset()
+        {
+            foreach (var shield in _shields)
+                shield.Reset();
         }
     }
 }
