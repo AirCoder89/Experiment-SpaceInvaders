@@ -6,9 +6,9 @@ namespace Core
 {
     public static class StateManager
     {
-        public static States nextState { get; private set; }
-        public static IGameState           previousState { get; private set; }
-        public static IGameState           activeState { get; private set; }
+        public static States               NextState { get; private set; }
+        public static IGameState           PreviousState { get; private set; }
+        public static IGameState           ActiveState { get; private set; }
         public static event Action<States> OnGameStateChanged; 
         
         private static Dictionary<States, IGameState> _gameStates;
@@ -23,24 +23,24 @@ namespace Core
         }
 
         public static void Tick(float inDeltaTime)
-            => activeState?.Tick(inDeltaTime);
+            => ActiveState?.Tick(inDeltaTime);
         
         public static void UpdateGameState(States inState)
         {
             if (!_gameStates.ContainsKey(inState))
                 throw new Exception($"Game State [{inState}] not found !");
 
-            nextState = inState;
-            if (activeState != null)
+            NextState = inState;
+            if (ActiveState != null)
             {
-                if (activeState.Label == inState) return;
-                activeState.Exit();
-                previousState = activeState;
+                if (ActiveState.Label == inState) return;
+                ActiveState.Exit();
+                PreviousState = ActiveState;
             }
 
             //Ensure that Enter() will be called before the 1st tick!
             _gameStates[inState].Enter();
-            activeState = _gameStates[inState];
+            ActiveState = _gameStates[inState];
             
             OnGameStateChanged?.Invoke(inState);
         }

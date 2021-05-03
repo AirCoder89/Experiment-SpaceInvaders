@@ -74,7 +74,7 @@ namespace Systems
             OnCollectScore?.Invoke(hitScore);
         }
 
-        private int DestroyMatches(InvaderView inTarget)
+        private int DestroyMatches(Cell inTarget)
         {
             if(inTarget == null) return 0;
                 var matchesScore = 0;

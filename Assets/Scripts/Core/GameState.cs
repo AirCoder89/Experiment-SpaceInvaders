@@ -27,7 +27,7 @@ namespace Core
                 _isVisible = value;
                 if(_isVisible) Resume();
                 else Pause();
-                if(StateManager.nextState == States.Pause) return;
+                if(StateManager.NextState == States.Pause) return;
                     GameHolder.gameObject.SetActive(_isVisible);
                     HUDCanvas.instance.RootCanvas.enabled = _isVisible;
             }
@@ -66,16 +66,6 @@ namespace Core
         }
 
         private void RevivePlayer()
-        {
-            if (_gameData.Lives > 0)
-            {
-                _gameData.Lives--;
-                GetSystem<PlayerSystem>().Reset();
-            }
-            else OnGameOver?.Invoke();
-        }
-
-        private void OnPlayerDestroyed(PlayerView inPlayerView)
         {
             if (_gameData.Lives > 0)
             {
@@ -141,8 +131,6 @@ namespace Core
             invadersCallback?.Invoke();
         }
 
-        public void Destroy() => Object.Destroy(GameHolder);
-        
         public void Start()
         {
             _isRun = true;

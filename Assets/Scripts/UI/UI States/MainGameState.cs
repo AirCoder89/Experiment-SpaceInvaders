@@ -9,11 +9,11 @@ namespace UI.UI_States
 {
     public class MainGameState : UIState
     {
-        [SerializeField] private RectTransform title;
-        [SerializeField] private float floatStrength = 1; 
-        [SerializeField] private float speed ; 
-        [SerializeField] private Button startBtn;
-        [SerializeField] private Button leaderBoardBtn;
+        [SerializeField] private RectTransform  title;
+        [SerializeField] private float          floatStrength = 1; 
+        [SerializeField] private float          speed ; 
+        [SerializeField] private Button         startBtn;
+        [SerializeField] private Button         leaderBoardBtn;
 
         private float _originalY;
         

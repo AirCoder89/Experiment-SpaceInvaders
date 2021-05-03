@@ -655,6 +655,7 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: f62eba01d29cd244cbdd3cf28b3f827a, type: 2}
   gameData: {fileID: 11400000, guid: caea245ab239e0840af7520285eb75c2, type: 2}
   levelConfig: {fileID: 11400000, guid: cc537f3c52f8da84191b758bd2b9afd2, type: 2}
+  inputConfig: {fileID: 11400000, guid: e087c0d9998c5504d954b9a57f21bf2f, type: 2}
   playerConfig: {fileID: 11400000, guid: 962e282221d67754380437746766b16e, type: 2}
   gridConfig: {fileID: 11400000, guid: 964623d6248d0c148bc2291ce2ea1f82, type: 2}
   shieldsConfig: {fileID: 11400000, guid: f0f4baf5e8c0fd64fafbf13a0e1a0c60, type: 2}
@@ -662,7 +663,6 @@ MonoBehaviour:
   shootingConfig: {fileID: 11400000, guid: 791756f8db7c6f845b5eee877580ddad, type: 2}
   animationConfig: {fileID: 11400000, guid: 17db93b4d040f6a419d12af9d3eab59d, type: 2}
   audioConfig: {fileID: 11400000, guid: 88241fa86b4211a469b836b14137f8c3, type: 2}
-  targetState: 0
 --- !u!4 &122629315
 Transform:
   m_ObjectHideFlags: 0
@@ -2274,7 +2274,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945583444}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 963194227}
@@ -2334,11 +2334,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: 3
-  bg: {fileID: 1492676830}
   title: {fileID: 6917520140210673113}
-  startScale: {x: 1.4, y: 0}
-  duration: 0.3
   ease: 39
+  startScale: {x: 1.4, y: 0}
+  bg: {fileID: 1492676830}
+  duration: 0.3
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -2781,7 +2781,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -49.388226}
+  m_AnchoredPosition: {x: 0, y: -49.5}
   m_SizeDelta: {x: -40, y: -138.77646}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1060595317
@@ -3113,7 +3113,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 166.96, y: 57.51}
+  m_AnchoredPosition: {x: 167, y: 57.5}
   m_SizeDelta: {x: 261.2683, y: 63.183945}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1325536312
@@ -3830,7 +3830,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -166.96, y: 57.51}
+  m_AnchoredPosition: {x: -167, y: 57.5}
   m_SizeDelta: {x: 261.2683, y: 63.183945}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1757909440

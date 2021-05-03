@@ -36,7 +36,7 @@ namespace Core
         
         public void SetParent(Transform inParent) => gameObject.transform.parent = inParent;
         public void SetPosition(Vector3 inPosition) => gameObject.transform.localPosition = inPosition;
-        public void SetScale(Vector3 inScale) => gameObject.transform.localScale = inScale;
+        protected void SetScale(Vector3 inScale) => gameObject.transform.localScale = inScale;
         
         public virtual void Destroy()
         {
@@ -45,11 +45,11 @@ namespace Core
             Object.Destroy(this.gameObject);
             gameObject = null;
         }
-        
-        public bool HasComponent<T>() where T : Component
+
+        private bool HasComponent<T>() where T : Component
             => _components.ContainsKey(typeof(T));
-        
-        public T AddComponent<T>() where T : Component
+
+        protected T AddComponent<T>() where T : Component
         {
             if (HasComponent<T>())  return _components[typeof(T)] as T;
             var newComponent = gameObject.AddComponent<T>();
@@ -57,7 +57,7 @@ namespace Core
             return newComponent;
         }
 
-        public T GetComponent<T>() where T : Component
+        protected T GetComponent<T>() where T : Component
         {
             if (!HasComponent<T>()) throw new NullReferenceException($"Component not found");
             var component = (T) _components[typeof(T)];

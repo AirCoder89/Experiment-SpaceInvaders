@@ -19,6 +19,11 @@ namespace Models.Database
 
         public void CalculateLastRank()
         {
+            if (group.players == null || group.players.Count == 0)
+            {
+                lastRankScore = 0;
+                return;
+            }
             lastRankScore = group.players.Min(score => score.scores.current);
         }
     }

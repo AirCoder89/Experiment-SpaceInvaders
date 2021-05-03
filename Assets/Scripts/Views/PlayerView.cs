@@ -110,19 +110,18 @@ namespace Views
             return 0;
         }
 
-        public void Move(float inHorizontalAxes, float inDeltaTime)
+        public void Move(float inHorizontalAxes)
         {
             if(!IsAlive) return;
             if(inHorizontalAxes < 0f && Position.x <= _config.movementRange.x) return; //prevent move left
             if(inHorizontalAxes > 0f && Position.x >= _config.movementRange.y) return; //prevent move right
-            var translation = inHorizontalAxes * _config.speed * inDeltaTime;
+            var translation = inHorizontalAxes * _config.speed * Time.deltaTime;
             gameObject.transform.Translate(translation, 0, 0);
         }
 
         public void Shoot()
         {
             if(!IsAlive) return;
-            Debug.Log($"Shoot");
             _shootingSystem.Shoot(Position, Vector3.up, _config.targetLayer, "Player");
         }
 

@@ -11,8 +11,8 @@ namespace Models.Invaders
     [Serializable]
     public struct InvaderCatalog
     {
-        public InvadersLabel[] indexer;
         public List<InvaderDataSet> invaders;
+        public InvadersLabel[]      indexer;
         public List<Color>          colors;
 
         public Color GetRandomColor()

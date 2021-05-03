@@ -13,14 +13,15 @@ namespace UI.UI_States
 {
     public class PauseGameState : UIState
     {
-        [SerializeField] private Image bg;
         [SerializeField] private RectTransform title;
-        [SerializeField] private Vector2 startScale;
-        [SerializeField] private float duration;
-        [SerializeField] private EaseType ease;
+        [SerializeField] private EaseType      ease;
+        [SerializeField] private Vector2       startScale;
+        [SerializeField] private Image         bg;
+        [SerializeField] private float         duration;
 
-        private ITweenJob _tweenJob;
-        private bool _canClose;
+        private ITweenJob   _tweenJob;
+        private bool        _canClose;
+        
         public override void Enter()
         {
             base.Enter();
@@ -37,14 +38,6 @@ namespace UI.UI_States
                 Main.ResumeGame();
                 return;
             }
-            /*if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-            {
-                // Check if finger is over a UI element
-                if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
-                {
-                    Debug.Log("Touched the UI");
-                }
-            }*/
         }
 
         private void Open()

@@ -6,7 +6,7 @@ namespace Models.Invaders
     [Serializable]
     public struct InvaderBehaviours
     {
-        public LayerMask targetLayer;
-        public float shootingRate;
+        public LayerMask   targetLayer;
+        public float       shootingRate;
     }
 }

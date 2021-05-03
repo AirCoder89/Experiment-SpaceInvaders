@@ -4,6 +4,7 @@ using Core;
 using Database;
 using Models.Database;
 using UI.Core;
+using UI.Leaderboards;
 using UnityEngine;
 
 namespace UI.UI_States

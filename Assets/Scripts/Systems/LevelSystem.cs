@@ -10,8 +10,8 @@ namespace Systems
     public class LevelSystem : GameSystem
     {
         public static event Action OnHitVerticalEdges;
-        private LevelConfig _config;
-        private Transform _holder;
+        private LevelConfig        _config;
+        private Transform          _holder;
         
         public LevelSystem(SystemConfig inConfig): base(inConfig)
         {

@@ -1,21 +1,16 @@
-﻿
-namespace Core
+﻿namespace Core
 {
     public class Counter
     {
         public float TimeRatio => _currentTime / _targetTime;
         
-        private readonly float _targetTime;
-        private float          _currentTime;
-        private bool           _isCounting;
+        private float     _targetTime;
+        private float     _currentTime;
+        private bool      _isCounting;
 
-        public Counter(float time)
+        public void Start(float time)
         {
             _targetTime = time;
-        }
-        
-        public void Start()
-        {
             _currentTime = 0f;
             _isCounting = true;
         }

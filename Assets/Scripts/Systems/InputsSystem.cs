@@ -9,74 +9,52 @@ namespace Systems
     public class InputsSystem : GameSystem,ITick
     {
         public static event Action<float> OnMove;
-        public static event Action OnShoot;
+        public static event Action        OnShoot;
         
-        private InputConfig _config;
-        
+        private readonly InputConfig _config;
+        private InputType _type;
+            
         public InputsSystem(SystemConfig inConfig) : base(inConfig)
         {
             if(inConfig != null) _config = inConfig as InputConfig;
-            _config.Initialize();
         }
         
         public override void Start()
         {
-            
-        }
-
-        public float GetAxis(InputBehaviour inBehaviour)
-        {
-            if (!IsRun || !_config) return 0f;
-            return Input.GetAxisRaw(_config.GetBehaviourAxis(inBehaviour));
+            if (_config.autoDetect)
+            {
+                #if UNITY_ANDROID
+                    _type = InputType.Touch;
+                #else
+                    _type = InputType.Editor;
+                #endif
+            }
+            else _type = _config.inputType;
         }
 
         public void Tick(float inDeltaTime)
         {
             if(!IsRun) return;
-            GetTouchInput();
+            if(_type == InputType.Touch)  EvaluateTouchControl();
+            else if(_type == InputType.Editor)  EvaluateEditorControl();
         }
 
-        private int _fingerId;
-
-        private void GetTouchInput()
+        private void EvaluateEditorControl()
         {
-            for (var i = 0; i < Input.touchCount; i++)
+            var horizontal = Input.GetAxis("Horizontal");
+            OnMove?.Invoke(horizontal);
+            if(Input.GetKeyDown(KeyCode.UpArrow)) OnShoot?.Invoke();
+        }
+        
+        private void EvaluateTouchControl()
+        {
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
             {
-                /*var t = Input.GetTouch(i);
-                switch (t.phase)
-                {
-                    case TouchPhase.Began:
-
-                        if (_fingerId == -1)
-                        {
-                            onFingerDown?.Invoke();
-                            _fingerId = t.fingerId;
-                        }
-
-                        break;
-                    case TouchPhase.Ended:
-                    case TouchPhase.Canceled:
-
-                        if (t.fingerId == _fingerId)
-                        {
-                            onFingerUp?.Invoke();
-                            _fingerId = -1;
-                        }
-
-                        break;
-                    case TouchPhase.Moved:
-
-                        if (t.fingerId == _fingerId)
-                        {
-                            onMove?.Invoke();
-                            _lookInput = t.deltaPosition * _settings.cameraSensitivity * Time.deltaTime;
-                        }
-
-                        break;
-                    case TouchPhase.Stationary:
-                        if (t.fingerId == _fingerId) _lookInput = Vector2.zero;
-                        break;
-                }*/
+                OnMove?.Invoke(Input.touches[0].deltaPosition.x);
+            }
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
+            {
+                OnShoot?.Invoke();
             }
         }
     }

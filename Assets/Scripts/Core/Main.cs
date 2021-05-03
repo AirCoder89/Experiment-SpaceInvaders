@@ -20,6 +20,7 @@ namespace Core
     {
         None, Update, Coroutine
     }
+    
     public class Main : MonoBehaviour
     {
         [Required] [SerializeField] private UIManager uiManager;
@@ -31,6 +32,7 @@ namespace Core
         [BoxGroup("Setup")][Required][SerializeField] private GameData                 gameData;
 
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig levelConfig;
+        [BoxGroup("System Config")][Required][SerializeField] [Expandable] private InputConfig  inputConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig playerConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig gridConfig;
         [BoxGroup("System Config")][Required][SerializeField] [Expandable] private SystemConfig shieldsConfig;
@@ -60,8 +62,8 @@ namespace Core
             // --------------------------------------------------------------------------------
             // Initializing & Establishing
             // --------------------------------------------------------------------------------
-            _timeCounter = new Counter(Settings.levelTime);
-            _timeCounter.Start();
+            _timeCounter = new Counter();
+            
             ApplyGameSettings();
             gameData.Initialize(((PlayerConfig)playerConfig).lives );
             gameData.ResetData();
@@ -105,6 +107,7 @@ namespace Core
                 .AddSystem(new TimingSystem())
                 .AddSystem(new LevelSystem(levelConfig))
                 .AddSystem(new AudioSystem(audioConfig))
+                .AddSystem(new InputsSystem(inputConfig))
                 .AddSystem(new PlayerSystem(playerConfig))
                 .AddSystem(new GridSystem(gridConfig))
                 .AddSystem(new ShieldsSystem(shieldsConfig))
@@ -116,14 +119,6 @@ namespace Core
         public static T GetSystem<T>() where T : GameSystem
             => _instance._gameState.GetSystem<T>();
 
-        public States targetState;
-
-        [Button]
-        private void SetState()
-        {
-            StateManager.UpdateGameState(targetState);
-        }
-        
         private void OnLevelWin(int inScore)
         {
             AudioSystem.Play(AudioLabel.LevelWin);
@@ -154,7 +149,7 @@ namespace Core
         }
 
         [Button]
-        private void SubmitPlayer()
+        private void SubmitFakePlayers() //testing purpose
         {
             //fil with fake player
             LocalLeaderboardSystem.SubmitLeaderboard(Data.Register.idToken, 0, new SubmitData()
@@ -166,8 +161,8 @@ namespace Core
             
             LocalLeaderboardSystem.SubmitLeaderboard(Data.Register.idToken, 0, new SubmitData()
             {
-                name = "Haifa Sayeh",
-                score = 589,
+                name = "AirCoder",
+                score = 1567,
                 tournamentId = Data.Leaderboards.@group.tournamentId
             });
         }
@@ -197,52 +192,53 @@ namespace Core
             _gameState.Resume();
         }
         
+        #region Async Operations
         
-        private readonly Dictionary<float, WaitForSeconds>  _waitDictionary = new Dictionary<float, WaitForSeconds>();
-        private static Dictionary<string, IEnumerator>      _coroutinesMap = new Dictionary<string, IEnumerator>();
-        
-        /// <summary>
-        /// None-allocating WaitForSeconds
-        /// </summary>
-        private WaitForSeconds GetWait(float inTime)
-        {
-            if (_waitDictionary.TryGetValue(inTime, out var wait)) return wait;
-            _waitDictionary[inTime] = new WaitForSeconds(inTime);
-            return _waitDictionary[inTime];
-        }
+            private readonly Dictionary<float, WaitForSeconds>  _waitDictionary = new Dictionary<float, WaitForSeconds>();
+            private static Dictionary<string, IEnumerator>      _coroutinesMap = new Dictionary<string, IEnumerator>();
+            
+            /// <summary>
+            /// None-allocating WaitForSeconds
+            /// </summary>
+            private WaitForSeconds GetWait(float inTime)
+            {
+                if (_waitDictionary.TryGetValue(inTime, out var wait)) return wait;
+                _waitDictionary[inTime] = new WaitForSeconds(inTime);
+                return _waitDictionary[inTime];
+            }
 
-        
-        public static string LateExecute(Action inAction, float inTime)
-        {
-            var operationId = Guid.NewGuid().ToString("N"); //generate unique identifier
-            var coroutine = _instance.WaitAndExecute(inAction, inTime, operationId);
-            _coroutinesMap.Add(operationId, coroutine);
-            _instance.StartCoroutine(coroutine);
-            return operationId;
-        }
+            
+            public static string LateExecute(Action inAction, float inTime)
+            {
+                var operationId = Guid.NewGuid().ToString("N"); //generate unique identifier
+                var coroutine = _instance.WaitAndExecute(inAction, inTime, operationId);
+                _coroutinesMap.Add(operationId, coroutine);
+                _instance.StartCoroutine(coroutine);
+                return operationId;
+            }
 
-        public static string ExecuteCoroutine(IEnumerator inCoroutine)
-        {
-            var operationId = Guid.NewGuid().ToString("N"); //generate unique identifier
-            _coroutinesMap.Add(operationId, inCoroutine);
-            _instance.StartCoroutine(inCoroutine);
-            return operationId;
-        }
+            public static string ExecuteCoroutine(IEnumerator inCoroutine)
+            {
+                var operationId = Guid.NewGuid().ToString("N"); //generate unique identifier
+                _coroutinesMap.Add(operationId, inCoroutine);
+                _instance.StartCoroutine(inCoroutine);
+                return operationId;
+            }
 
-        public static bool CancelExecution(string inOperationId)
-        {
-            if (string.IsNullOrEmpty(inOperationId) || !_coroutinesMap.ContainsKey(inOperationId)) return false;
-            _instance.StopCoroutine(_coroutinesMap[inOperationId]);
-            return true;
-        }
+            public static bool CancelExecution(string inOperationId)
+            {
+                if (string.IsNullOrEmpty(inOperationId) || !_coroutinesMap.ContainsKey(inOperationId)) return false;
+                _instance.StopCoroutine(_coroutinesMap[inOperationId]);
+                return true;
+            }
 
-        private IEnumerator WaitAndExecute(Action inAction, float inTime, string inOperationId)
-        {
-            yield return GetWait(inTime);
-            inAction?.Invoke();
-            _coroutinesMap.Remove(inOperationId);
-        }
-        
+            private IEnumerator WaitAndExecute(Action inAction, float inTime, string inOperationId)
+            {
+                yield return GetWait(inTime);
+                inAction?.Invoke();
+                _coroutinesMap.Remove(inOperationId);
+            }
+        #endregion
         
         private void Update()
         {
@@ -265,6 +261,10 @@ namespace Core
         {
             AudioSystem.Play(AudioLabel.NewGame);
             StateManager.UpdateGameState(States.Game);
+            
+            _instance._timeCounter.Stop();
+            _instance._timeCounter.Start(Settings.levelTime);
+            
             if (_instance._isFirstRun)
             {
                 _instance.FirstStart();

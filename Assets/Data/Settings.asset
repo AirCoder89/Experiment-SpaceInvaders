@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 062bf9f5d9274030911d94a3df3f343b, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
+  levelTime: 120
+  timeBonus: 50
   currentCountry: DK
   gameLoop: 1
   startState: 0

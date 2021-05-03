@@ -26,8 +26,11 @@ namespace Systems
             _playerView.SetParent(GameState.GameHolder);
             _fireRateCounter = 0;
             _canShoot = true;
+
+            InputsSystem.OnMove += MovePlayer;
+            InputsSystem.OnShoot += Shoot;
         }
-        
+
         public void Reset()
         {
             _playerView.Reset();
@@ -43,14 +46,14 @@ namespace Systems
         public void Tick(float inDeltaTime)
         {
             if(!IsRun) return;
-            
             EvaluateFireRate(inDeltaTime);
-            
-            var horizontal = Input.GetAxis("Horizontal");
-            _playerView.Move(horizontal, inDeltaTime);
-            if(Input.GetKeyDown(KeyCode.Space)) Shoot();
         }
 
+        private void MovePlayer(float inHorizontal)
+        {
+            _playerView.Move(inHorizontal);
+        }
+        
         private void EvaluateFireRate(float inDeltaTime)
         {
             if(_canShoot) return;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace UI.Leaderboards
 {
     public class LeaderBoardItem : MonoBehaviour
     {

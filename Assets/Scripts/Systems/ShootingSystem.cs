@@ -12,7 +12,7 @@ namespace Systems
 {
     public class ShootingSystem : GameSystem, ITick
     {
-        private HashSet<GameView> _bulletsInScene;
+        private HashSet<GameView>   _bulletsInScene;
         private ShootingConfig      _config;
         private Transform           _holder;
        
