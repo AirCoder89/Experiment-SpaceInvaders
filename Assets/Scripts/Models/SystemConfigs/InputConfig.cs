@@ -1,17 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using Core;
+﻿using Core;
 using UnityEngine;
 
 namespace Models.SystemConfigs
 {
-    public enum InputBehaviour
-    {
-        None = 0,
-        Shoot = 1,
-        Move = 2
-    }
-
     public enum InputType
     {
         Editor, Touch

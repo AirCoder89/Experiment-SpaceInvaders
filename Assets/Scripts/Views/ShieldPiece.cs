@@ -32,13 +32,13 @@ namespace Views
         {
             if(!IsAlive) return;
             Health--;
+            //Todo : update shape
         }
 
         public int Kill()
         {
             Visibility = false;
             return 0;
-            //Todo: add sfx
         }
 
         public void Reset()

@@ -124,7 +124,5 @@ namespace Views
             if(!IsAlive) return;
             _shootingSystem.Shoot(Position, Vector3.up, _config.targetLayer, "Player");
         }
-
-        
     }
 }

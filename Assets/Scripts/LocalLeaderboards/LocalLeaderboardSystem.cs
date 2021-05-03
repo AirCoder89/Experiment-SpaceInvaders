@@ -20,11 +20,7 @@ namespace LocalLeaderboards
 
         public static LocalResponse<RegisterData> GetToken()
         {
-            if (_instance.database.Tokens == null)
-            {
-                _instance.database.Tokens = new Dictionary<string, int>();
-                Debug.Log($"Assign token");
-            }
+            if (_instance.database.Tokens == null) _instance.database.Tokens = new Dictionary<string, int>();
             var token = Guid.NewGuid().ToString("N");
             var userId = _instance.database.Tokens.Count;
             _instance.database.Tokens.Add(token, userId);

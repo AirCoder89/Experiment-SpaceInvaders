@@ -11,10 +11,6 @@ namespace Systems
     {
         private HashSet<Timer> _timers;
 
-        public TimingSystem() : base(null)
-        {
-        }
-        
         public override void Start()
         {
         }

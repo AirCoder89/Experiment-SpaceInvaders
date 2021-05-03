@@ -12,7 +12,7 @@ namespace Systems
         public static event Action        OnShoot;
         
         private readonly InputConfig _config;
-        private InputType _type;
+        private InputType            _type;
             
         public InputsSystem(SystemConfig inConfig) : base(inConfig)
         {

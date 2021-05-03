@@ -2,7 +2,7 @@
 {
     public enum TweenDirection
     {
-        RTL, LTR
+        Rtl, Ltr
     }
 
     public enum TweenAxis

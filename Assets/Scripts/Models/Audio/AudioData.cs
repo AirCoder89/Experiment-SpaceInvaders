@@ -33,7 +33,7 @@ namespace Models.Audio
         {
             if (!singleSource) return AudioPool.GetSource();
                 if (_sources == null || _sources.Count == 0) return AudioPool.GetSource();
-                return _sources.First().source;
+                return _sources.First().Source;
         }
 
         private AudioSource AssignClipData(AudioSource inSource)
@@ -51,10 +51,10 @@ namespace Models.Audio
         {
             if(_sources == null || _sources.Count == 0) return;
            
-            var completedSrc = _sources.Where(src => !src.source.isPlaying && !src.source.loop);
+            var completedSrc = _sources.Where(src => !src.Source.isPlaying && !src.Source.loop);
             foreach (var audioSource in completedSrc.ToList())
             {
-                AudioPool.AddToPool(audioSource.source);
+                AudioPool.AddToPool(audioSource.Source);
                 _sources.Remove(audioSource);
             }
         }
@@ -77,7 +77,7 @@ namespace Models.Audio
         {
             if(_sources == null || _sources.Count == 0) return;
             foreach (var source in _sources)
-                source.source.Stop();
+                source.Source.Stop();
         }
 
     }

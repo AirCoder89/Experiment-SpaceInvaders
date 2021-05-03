@@ -10,10 +10,9 @@ namespace Models
     {
         public static event Action OnDataChanged;
 
-        public RegisterData Register { get; set; }
+        public RegisterData    Register { get; set; }
         public LeaderBoardData Leaderboards { get; set; }
 
-        private float _elapsedTime;
         public float ElapsedTime
         {
             get => _elapsedTime;
@@ -24,7 +23,6 @@ namespace Models
             }
         }
 
-        private int _lives;
         public int Lives
         {
             get => _lives;
@@ -35,7 +33,6 @@ namespace Models
             }
         }
         
-        private int _score;
         public int Score
         {
             get => _score;
@@ -46,7 +43,11 @@ namespace Models
             }
         }
 
-        private int _startLives;
+        private float  _elapsedTime;
+        private int    _startLives;
+        private int    _lives;
+        private int    _score;
+        
         public void Initialize(int inLives)
         {
             _startLives = _lives = inLives;

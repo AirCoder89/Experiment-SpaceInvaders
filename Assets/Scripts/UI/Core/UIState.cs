@@ -59,23 +59,20 @@ namespace UI.Core
             Visibility = true;
         }
 
-        public virtual void Tick(float inDeltaTime)
-        {
-            
-        }
+        public virtual void Tick(float inDeltaTime)  {}
 
         public virtual void Exit()
         {
             Visibility = false;
         }
 
-        public void FadeIn(Action inCallback = null)
+        protected void FadeIn(Action inCallback = null)
         {
             _canvasGroup.alpha = 0f;
             _canvasGroup.TweenOpacity(1f, _manager.fadeTransitionDuration).OnComplete(inCallback).Play();
         }
-        
-        public void FadeOut(Action inCallback = null)
+
+        protected void FadeOut(Action inCallback = null)
         {
             _canvasGroup.alpha = 1f;
             _canvasGroup.TweenOpacity(0f, _manager.fadeTransitionDuration).OnComplete(inCallback).Play();

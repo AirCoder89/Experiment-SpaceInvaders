@@ -10,9 +10,6 @@ namespace Systems
 {
     public class PlayerSystem : GameSystem, ITick
     {
-        private InputsSystem _InputsSystem 
-            => _input ?? (_input = Main.GetSystem<InputsSystem>());
-        
         private readonly PlayerConfig   _config;
         private readonly PlayerView     _playerView;
         private InputsSystem            _input;

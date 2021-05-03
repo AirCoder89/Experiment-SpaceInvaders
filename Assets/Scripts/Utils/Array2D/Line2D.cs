@@ -160,8 +160,8 @@ namespace Utils.Array2D
         public void TweenCellsScale(TweenDirection inWay, float inDuration, EaseType inEase)
         {
             if (_values == null || _values.Length < 1) return;
-            if (inWay == TweenDirection.RTL) AssignRTLTween(inDuration, inEase);
-            else if (inWay == TweenDirection.LTR) AssignLTRTween(inDuration, inEase);
+            if (inWay == TweenDirection.Rtl) AssignRTLTween(inDuration, inEase);
+            else if (inWay == TweenDirection.Ltr) AssignLTRTween(inDuration, inEase);
         }
 
         private void AssignRTLTween(float inDuration, EaseType inEase)
@@ -195,8 +195,8 @@ namespace Utils.Array2D
         public void PlayScaleTween(TweenDirection inWay)
         {
             if (_values == null || _values.Length < 1) return;
-                if(inWay == TweenDirection.RTL) _values[_values.Length-1].TweenJob.Play();
-                else if(inWay == TweenDirection.LTR) _values[0].TweenJob.Play();
+                if(inWay == TweenDirection.Rtl) _values[_values.Length-1].TweenJob.Play();
+                else if(inWay == TweenDirection.Ltr) _values[0].TweenJob.Play();
         }
         #endregion
       

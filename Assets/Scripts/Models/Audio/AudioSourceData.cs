@@ -4,25 +4,25 @@ namespace Models.Audio
 {
     public struct AudioSourceData
     {
-        public readonly AudioSource source;
+        public readonly AudioSource Source;
         private float               _value;
 
         public AudioSourceData(AudioSource inSource)
         {
-            source = inSource;
+            Source = inSource;
             _value = 0f;
         }
 
         public void Pause()
         {
-            _value = source.time;
-            source.Stop();
+            _value = Source.time;
+            Source.Stop();
         }
 
         public void Resume()
         {
-            source.time = _value;
-            source.Play();
+            Source.time = _value;
+            Source.Play();
         }
     }
 }

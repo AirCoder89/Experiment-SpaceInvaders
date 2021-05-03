@@ -12,7 +12,7 @@ namespace Views
     
     public class GameView3D : GameView
     {
-        public LayerMask layerMask
+        protected LayerMask layerMask
         {
             get => gameObject.layer;
             set => gameObject.layer = value;
