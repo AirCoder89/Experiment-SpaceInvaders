@@ -84,7 +84,7 @@ _I would like to walk through the source code and explain my perspective about a
 
 ### Points[0] = Architecture:
 
-Usually when I have to create a project like space invaders I directly choose MVC Architecture. but I decided to move with something more complicated, may that can attract your attention.
+Usually when I have to create a project like space invaders I directly choose MVC Architecture. but I decided to move with something more complicated.
 This architecture is based on avoid using **MonoBehaviour** as we can! The idea is to create all gameplay just by using a single **MonoBehaviour** that acts as an entry point and a code flow distributor.
 
 ### Points[1] = **Game states:**
