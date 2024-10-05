@@ -1,5 +1,17 @@
-# Space Invaders
-3D Space Invaders game prototype.
+# Space Invaders - 3D Game Prototype.
+
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/628d98c6-0224-48a2-b3e3-321b5f48e681" alt="InspectMe Logo" width="100"></td>
+    <td>
+      🛠️ Boost your Unity workflows with <a href="https://divinitycodes.de/">InspectMe</a>! Our tool simplifies debugging with an intuitive tree view. Check it out! 👉 
+      <a href="https://assetstore.unity.com/packages/tools/utilities/inspectme-lite-advanced-debugging-code-clarity-283366">InspectMe Lite</a> - 
+      <a href="https://assetstore.unity.com/packages/tools/utilities/inspectme-pro-advanced-debugging-code-clarity-256329">InspectMe Pro</a>
+    </td>
+  </tr>
+</table>
+
+---
 
 ### Goals:
 The main goal of this project is to recreate Space Invaders with gameplay variation and multiple technical objectives. Each enemy has a specific color. When an enemy of a particular color is destroyed, all connected enemies of the same color are also destroyed.
@@ -25,3 +37,15 @@ The player begins at the main menu, then plays a session. The player can submit 
 - **Services Contract**: A local leaderboard system with RestClient utility for handling database requests.
 - **Game Systems**: A variety of helper systems to manage game mechanics.
 
+---
+
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/628d98c6-0224-48a2-b3e3-321b5f48e681" alt="InspectMe Logo" width="100"></td>
+    <td>
+      🛠️ Boost your Unity workflows with <a href="https://divinitycodes.de/">InspectMe</a>! Our tool simplifies debugging with an intuitive tree view. Check it out! 👉 
+      <a href="https://assetstore.unity.com/packages/tools/utilities/inspectme-lite-advanced-debugging-code-clarity-283366">InspectMe Lite</a> - 
+      <a href="https://assetstore.unity.com/packages/tools/utilities/inspectme-pro-advanced-debugging-code-clarity-256329">InspectMe Pro</a>
+    </td>
+  </tr>
+</table>
